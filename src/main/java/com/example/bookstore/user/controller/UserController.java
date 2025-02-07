@@ -6,41 +6,43 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
+
     private final UserService userService;
 
+    //마이페이지 조회 (유저 상세 정보)
     @GetMapping("/user/detail")
     public ResponseEntity<UserDto> getUserDetail(@RequestParam String email) {
         return userService.findByEmail(email)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
-    //회원 정보 조회
+
+    //회원 정보 수정 페이지 (현재 정보 불러오기)
     @GetMapping("/user/edit")
     public ResponseEntity<UserDto> getUserEdit(@RequestParam String email) {
         return userService.findByEmail(email)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-    //회원 정보 수정
-    @PostMapping("/user/edit")
-    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto) {
-        userService.update(userDto);
-        return ResponseEntity.ok(userDto);
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    //회원 탈퇴
-    //진짜 지워도 되나? 비활성화 생각하기
-    @PostMapping("/user/delete")
-    public ResponseEntity<UserDto> deleteUser(@RequestParam String email) {
+    //회원 정보 수정 (수정 후 `/users`로 리다이렉트)
+    @PostMapping
+    public ResponseEntity<String> updateUser(
+            @RequestParam Long userId,
+            @RequestParam String phone,
+            @RequestParam String nickname) {
+        userService.update(userId, phone, nickname);
+        return ResponseEntity.ok("redirect:/users");
+    }
+
+    //회원 탈퇴 (탈퇴 후 `/`로 리다이렉트)
+    @PostMapping("/delete")
+    public ResponseEntity<String> deleteUser(@RequestParam Long userId) {
         userService.delete(userId);
         return ResponseEntity.ok("redirect:/");
     }
-
 }

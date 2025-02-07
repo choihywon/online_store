@@ -1,6 +1,6 @@
 package com.example.bookstore.user.dto;
 
-import lombok.*;
+import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
@@ -10,7 +10,6 @@ public class UserDto {
     private final String nickname;
     private final String grade;
     private final int mileage;
-    //블랙 유무
     private final char useYn;
     private final LocalDateTime createdAt;
     private final LocalDateTime lastModifiedAt;
