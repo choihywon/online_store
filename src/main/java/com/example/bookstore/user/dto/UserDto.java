@@ -1,5 +1,6 @@
 package com.example.bookstore.user.dto;
 
+import com.example.bookstore.user.domain.User;
 import lombok.Getter;
 import java.time.LocalDateTime;
 
@@ -14,14 +15,24 @@ public class UserDto {
     private final LocalDateTime createdAt;
     private final LocalDateTime lastModifiedAt;
 
-    public UserDto(String email, String phone, String nickname, String grade, int mileage, char useYn, LocalDateTime createdAt, LocalDateTime lastModifiedAt) {
-        this.email = email;
-        this.phone = phone;
-        this.nickname = nickname;
-        this.grade = grade;
-        this.mileage = mileage;
-        this.useYn = useYn;
-        this.createdAt = createdAt;
-        this.lastModifiedAt = lastModifiedAt;
+//    public UserDto(String email, String phone, String nickname, String grade, int mileage, char useYn, LocalDateTime createdAt, LocalDateTime lastModifiedAt) {
+//        this.email = email;
+//        this.phone = phone;
+//        this.nickname = nickname;
+//        this.grade = grade;
+//        this.mileage = mileage;
+//        this.useYn = useYn;
+//        this.createdAt = createdAt;
+//        this.lastModifiedAt = lastModifiedAt;
+//    }
+    public UserDto(User user) {
+        this.email = user.getEmail();
+        this.phone = user.getPhone();
+        this.nickname = user.getNickname();
+        this.grade = user.getGrade();
+        this.mileage = user.getMileage();
+        this.useYn = user.getUseYn();
+        this.createdAt = user.getCreatedAt();
+        this.lastModifiedAt = user.getLastModifiedAt();
     }
 }

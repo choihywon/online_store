@@ -4,10 +4,12 @@ import lombok.Getter;
 
 @Getter
 public class UpdateUserDto {
-    private String phone;
-    private String nickname;
+    private final String email;
+    private final String phone;
+    private final String nickname;
 
-    public UpdateUserDto(String phone, String nickname) {
+    public UpdateUserDto(String email, String phone, String nickname) {
+        this.email = email;
         this.phone = phone;
         this.nickname = nickname;
     }

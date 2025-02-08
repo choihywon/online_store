@@ -1,6 +1,7 @@
 package com.example.bookstore.user.domain;
 
 import com.example.bookstore.user.domain.UserRole;
+import com.example.bookstore.user.dto.UpdateUserDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -51,35 +52,13 @@ public class User {
     @LastModifiedDate
     private LocalDateTime lastModifiedAt;
 
-    //정적 팩토리 메서드 (회원 생성)
-    public static User createUser(String email, String password, String phone, String nickname, UserRole role) {
-        return new User(email, password, phone, nickname, "BASIC", 0, 'Y', role);
+    //회원 정보 수정 (DTO 활용)
+    public void updateUserInfo(UpdateUserDto updateUserDto) {
+        this.phone = updateUserDto.getPhone();
+        this.nickname = updateUserDto.getNickname();
     }
 
-    //생성자 (생성 제한 & 정적 팩토리 메서드 사용)
-    private User(String email, String password, String phone, String nickname, String grade, int mileage, char useYn, UserRole role) {
-        this.email = email;
-        this.password = password;
-        this.phone = phone;
-        this.nickname = nickname;
-        this.grade = grade;
-        this.mileage = mileage;
-        this.useYn = useYn;
-        this.role = role;
-    }
-
-    //회원 정보 수정
-    public void updateUserInfo(String phone, String nickname) {
-        this.phone = phone;
-        this.nickname = nickname;
-    }
-
-    //비밀번호 변경
-    public void changePassword(String newPassword) {
-        this.password = newPassword;
-    }
-
-    //회원 탈퇴 (비활성화)
+    //회원 탈퇴 (소프트 삭제)
     public void deactivate() {
         this.useYn = 'N';
     }

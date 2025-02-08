@@ -1,5 +1,6 @@
 package com.example.bookstore.user.controller;
 
+import com.example.bookstore.user.dto.UpdateUserDto;
 import com.example.bookstore.user.dto.UserDto;
 import com.example.bookstore.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -33,13 +34,12 @@ public class UserController {
     @PostMapping
     public ResponseEntity<String> updateUser(
             @RequestParam Long userId,
-            @RequestParam String phone,
-            @RequestParam String nickname) {
-        userService.update(userId, phone, nickname);
+            @RequestBody UpdateUserDto updateUserDto) {
+        userService.update(userId, updateUserDto);
         return ResponseEntity.ok("redirect:/users");
     }
 
-    //회원 탈퇴 (탈퇴 후 `/`로 리다이렉트)
+    // 회원 탈퇴 (탈퇴 후 `/`로 리다이렉트)
     @PostMapping("/delete")
     public ResponseEntity<String> deleteUser(@RequestParam Long userId) {
         userService.delete(userId);

@@ -1,5 +1,8 @@
 package com.example.bookstore.user.service;
 
+import com.example.bookstore.user.domain.UserRole;
+import com.example.bookstore.user.dto.JoinUserDto;
+import com.example.bookstore.user.dto.UpdateUserDto;
 import com.example.bookstore.user.dto.UserDto;
 import com.example.bookstore.user.domain.User;
 import com.example.bookstore.user.repository.UserRepository;
@@ -15,34 +18,23 @@ import java.util.stream.Collectors;
 @Transactional
 public class UserService {
 
+
     private final UserRepository userRepository;
 
     //이메일로 회원 조회
     public Optional<UserDto> findByEmail(String email) {
         return userRepository.findByEmail(email)
-                .map(user -> new UserDto(
-                        user.getEmail(),
-                        user.getPhone(),
-                        user.getNickname(),
-                        user.getGrade(),
-                        user.getMileage(),
-                        user.getUseYn(),
-                        user.getCreatedAt(),
-                        user.getLastModifiedAt()
-                ));
+                .map(UserDto::new);
     }
-
-
-
 
     //회원 정보 수정
-    public void update(Long id, String phone, String nickname) {
+    public void update(Long id, UpdateUserDto updateUserDto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
-        user.updateUserInfo(phone, nickname);
+        user.updateUserInfo(updateUserDto);
     }
 
-    //회원 탈퇴
+    //회원 탈퇴 (소프트 삭제)
     public void delete(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
