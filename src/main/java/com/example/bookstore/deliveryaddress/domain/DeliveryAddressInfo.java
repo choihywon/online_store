@@ -45,7 +45,7 @@ public class DeliveryAddressInfo {
     @LastModifiedDate
     private LocalDateTime lastModifiedAt;
 
-    // ✅ 배송지 정보 생성
+    //배송지 정보 생성
     public static DeliveryAddressInfo createAddress(User user, String addressName, String zipcode, String streetAddr, String detailAddr, String etc) {
         return new DeliveryAddressInfo(user, addressName, zipcode, streetAddr, detailAddr, etc);
     }
@@ -59,7 +59,7 @@ public class DeliveryAddressInfo {
         this.etc = etc;
     }
 
-    // ✅ 배송지 정보 수정
+    //배송지 정보 수정
     public void updateAddress(String addressName, String zipcode, String streetAddr, String detailAddr, String etc) {
         this.addressName = addressName;
         this.zipcode = zipcode;

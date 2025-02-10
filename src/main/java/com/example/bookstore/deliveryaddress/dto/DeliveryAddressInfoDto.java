@@ -1,7 +1,12 @@
 package com.example.bookstore.deliveryaddress.dto;
 
 import com.example.bookstore.deliveryaddress.domain.DeliveryAddressInfo;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+
+@Getter
+@RequiredArgsConstructor
 public class DeliveryAddressInfoDto {
     private final String addressName;
     private final String zipcode;
