@@ -1,7 +1,5 @@
 package com.example.bookstore.user.domain;
 
-import com.example.bookstore.user.domain.UserRole;
-import com.example.bookstore.user.dto.UpdateUserDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -52,10 +50,10 @@ public class User {
     @LastModifiedDate
     private LocalDateTime lastModifiedAt;
 
-    //회원 정보 수정 (DTO 활용)
-    public void updateUserInfo(UpdateUserDto updateUserDto) {
-        this.phone = updateUserDto.getPhone();
-        this.nickname = updateUserDto.getNickname();
+    //회원 정보 수정
+    public void updateUserInfo(String phone, String nickname) {
+        this.phone = phone;
+        this.nickname = nickname;
     }
 
     //회원 탈퇴 (소프트 삭제)
