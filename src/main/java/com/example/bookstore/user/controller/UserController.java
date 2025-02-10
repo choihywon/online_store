@@ -8,8 +8,13 @@ import com.example.bookstore.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+
 
 @Controller
 @RequestMapping("/users")
@@ -18,28 +23,57 @@ public class UserController {
 
     private final UserService userService;
 
-    // 🔹 회원가입 페이지 렌더링 (join.html)
-    @GetMapping("/join")  // 이제 "/join"으로 직접 접근 가능
+
+    @GetMapping("/join")
     public String joinPage() {
-        return "join";  // ✅ templates/join.html 반환
+        return "join";
     }
 
-    // 🔹 로그인 페이지 렌더링 (login.html)
+
     @GetMapping("/login")
     public String loginPage() {
-        return "login";  // templates/login.html 반환
+        return "login";
     }
 
-    // 🔹 마이페이지 렌더링 (mypage.html)
+
     @GetMapping("/mypage")
     public String myPage() {
-        return "mypage";  // templates/mypage.html 반환
+        return "mypage";
+    }
+
+    @GetMapping("/mypage/info")
+    @ResponseBody
+    public ResponseEntity<UserDto> getUserInfo(Authentication authentication) {
+        if (authentication == null || authentication.getName() == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        System.out.println("✅ authentication.getName(): " + authentication.getName()); // ✅ 로그 추가
+        String email = authentication.getName();
+
+        UserDto userDto = userService.findByEmail(email);
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
+    }
+
+
+    //회원 정보 수정 (닉네임 & 전화번호 변경)
+    @PutMapping("/mypage/update")
+    @ResponseBody
+    public ResponseEntity<String> updateUser(Authentication authentication,
+                                             @RequestBody UpdateUserDto updateUserDto) {
+        if (authentication == null || authentication.getName() == null) {
+            return new ResponseEntity<>("로그인이 필요합니다.", HttpStatus.UNAUTHORIZED);
+        }
+
+        String email = authentication.getName(); // ✅ 로그인한 사용자의 이메일 가져오기
+        userService.updateUser(email, updateUserDto);
+        return new ResponseEntity<>("회원 정보가 수정되었습니다.", HttpStatus.OK);
     }
 
     @PostMapping("/signup")
     public String joinUser(@ModelAttribute JoinUserDto joinUserDto) {
         userService.joinUser(joinUserDto);
-        return "redirect:/users/login";  // 회원가입 후 로그인 페이지로 이동
+        return "redirect:/users/login";
     }
 
 
@@ -51,7 +85,7 @@ public class UserController {
     }
 
 
-    // 🔹 이메일 중복 확인 API
+
     @GetMapping("/check-email")
     @ResponseBody
     public ResponseEntity<Boolean> checkDuplicateEmail(@RequestParam String email) {
@@ -59,7 +93,7 @@ public class UserController {
         return new ResponseEntity<>(exists, HttpStatus.OK);
     }
 
-    // 🔹 회원 정보 조회 API (이메일 기준)
+
     @GetMapping("/{email}")
     @ResponseBody
     public ResponseEntity<UserDto> findUser(@PathVariable String email) {

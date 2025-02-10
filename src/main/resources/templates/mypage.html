@@ -1,50 +1,82 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="ko" xmlns:th="http://www.thymeleaf.org">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-<!--    <title>마이페이지</title>-->
-<!--    <link rel="stylesheet" href="/css/style.css">-->
-<!--</head>-->
-<!--<body>-->
-
-<!--<h2>마이페이지</h2>-->
-<!--<p>이메일: <span id="userEmail"></span></p>-->
-<!--<p>닉네임: <span id="userNickname"></span></p>-->
-<!--<p>전화번호: <span id="userPhone"></span></p>-->
-
-<!--<script>-->
-<!--    function loadUserInfo() {-->
-<!--        let email = "test@example.com";  // 세션을 활용하여 로그인한 사용자 이메일 가져오기-->
-<!--        fetch(`/users/${email}`)-->
-<!--            .then(response => response.json())-->
-<!--            .then(data => {-->
-<!--                document.getElementById('userEmail').textContent = data.email;-->
-<!--                document.getElementById('userNickname').textContent = data.nickname;-->
-<!--                document.getElementById('userPhone').textContent = data.phone;-->
-<!--            })-->
-<!--            .catch(error => console.error('Error:', error));-->
-<!--    }-->
-
-<!--    loadUserInfo();-->
-<!--</script>-->
-
-<!--</body>-->
-<!--</html>-->
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>마이페이지</title>
 </head>
 <body>
 
 <h2>마이페이지</h2>
-<p>이메일: <span th:text="${user.email}"></span></p>
-<p>닉네임: <span th:text="${user.nickname}"></span></p>
-<p>전화번호: <span th:text="${user.phone}"></span></p>
 
-<p><a href="/">홈으로 이동</a></p>
+<!-- 회원 정보 조회 -->
+<div>
+    <p>이메일: <span id="email"></span></p>
+    <p>닉네임: <span id="nickname"></span></p>
+    <p>전화번호: <span id="phone"></span></p>
+    <p>등급: <span id="grade"></span></p>
+    <p>마일리지: <span id="mileage"></span></p>
+    <p>가입일: <span id="createdAt"></span></p>
+</div>
+
+<!-- 회원 정보 수정 폼 -->
+<h3>회원 정보 수정</h3>
+<form id="updateForm">
+    <label for="newNickname">닉네임</label>
+    <input type="text" id="newNickname" name="nickname" required>
+
+    <label for="newPhone">전화번호</label>
+    <input type="text" id="newPhone" name="phone" required>
+
+    <button type="button" onclick="updateUser()">수정하기</button>
+</form>
+
+<script>
+    //마이페이지 정보 불러오기
+    function loadUserInfo() {
+        fetch('/users/mypage/info')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('email').textContent = data.email;
+                document.getElementById('nickname').textContent = data.nickname;
+                document.getElementById('phone').textContent = data.phone;
+                document.getElementById('grade').textContent = data.grade;
+                document.getElementById('mileage').textContent = data.mileage;
+                document.getElementById('createdAt').textContent = new Date(data.createdAt).toLocaleString();
+            })
+            .catch(error => {
+                console.error("사용자 정보를 불러오는 중 오류 발생:", error);
+                alert("로그인이 필요합니다.");
+                window.location.href = "/users/login";
+            });
+    }
+
+    //회원 정보 업데이트
+    function updateUser() {
+        let formData = {
+            phone: document.getElementById('newPhone').value,
+            nickname: document.getElementById('newNickname').value
+        };
+
+        fetch('/users/mypage/update', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert("회원 정보가 수정되었습니다.");
+                    loadUserInfo(); // 수정 후 정보 다시 불러오기
+                } else {
+                    alert("회원 정보 수정 실패");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+    }
+
+    // ✅ 페이지 로드 시 사용자 정보 가져오기
+    window.onload = loadUserInfo;
+</script>
 
 </body>
 </html>

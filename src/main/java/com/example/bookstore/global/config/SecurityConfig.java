@@ -26,11 +26,11 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
-                        .loginPage("/users/login") // ✅ 로그인 페이지 설정
-                        .usernameParameter("email") // ✅ 이메일을 ID로 사용
+                        .loginPage("/users/login") //로그인 페이지 설정
+                        .usernameParameter("email") //이메일을 ID로 사용
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/", true) // ✅ 로그인 성공 시 홈으로 이동
-                        .failureUrl("/users/login?error=true") // ✅ 로그인 실패 시 login 페이지에 머무름
+                        .defaultSuccessUrl("/", true) //로그인 성공 시 홈으로 이동
+                        .failureUrl("/users/login?error=true") // 로그인 실패 시 login 페이지에 머무름
                         .permitAll()
                 )
                 .logout(logout -> logout
@@ -38,13 +38,13 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/")
                         .permitAll()
                 )
-                .userDetailsService(userDetailsService);  // ✅ 사용자 인증 서비스 등록
+                .userDetailsService(userDetailsService);  //사용자 인증 서비스 등록
 
         return http.build();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();  // 🔹 비밀번호 암호화
+        return new BCryptPasswordEncoder();
     }
 }

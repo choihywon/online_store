@@ -15,7 +15,7 @@ public class UserDto {
     private String nickname;
     private String grade;
     private int mileage;
-    private char useYn;
+    private Boolean useYn;
     private LocalDateTime createdAt;
     private LocalDateTime lastModifiedAt;
 }

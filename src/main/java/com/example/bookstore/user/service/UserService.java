@@ -13,93 +13,93 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+
     @Transactional
     public UserDto joinUser(JoinUserDto joinUserDto) {
-        System.out.println("회원가입 요청 데이터: email=" + joinUserDto.getEmail() + ", password=" + joinUserDto.getPassword());
-
-        if (joinUserDto.getPassword() == null || joinUserDto.getPassword().isEmpty()) {
-            throw new IllegalArgumentException("비밀번호 입력 해야합니다.");
+        // 이메일 중복 검사
+        if (userRepository.existsByEmail(joinUserDto.getEmail())) {
+            throw new IllegalStateException("이미 가입된 이메일입니다.");
         }
+
+        //비밀번호 검증
+        if (joinUserDto.getPassword() == null || joinUserDto.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("비밀번호를 입력해야 합니다.");
+        }
+
 
         User user = User.builder()
                 .email(joinUserDto.getEmail())
-                .password(passwordEncoder.encode(joinUserDto.getPassword()))  //비밀번호 암호화
+                .password(passwordEncoder.encode(joinUserDto.getPassword()))
                 .phone(joinUserDto.getPhone())
                 .nickname(joinUserDto.getNickname())
                 .grade("일반")
                 .mileage(0)
-                .useYn('Y')
+                .useYn(true)
                 .role(UserRole.USER)
                 .build();
 
         userRepository.save(user);
-        System.out.println("✅ 회원가입 완료: " + user.getEmail());
         return new UserDto(user.getEmail(), user.getPhone(), user.getNickname(),
-                user.getGrade(), user.getMileage(), user.getUseYn(),
+                user.getGrade(), user.getMileage(), user.isUseYn(),
                 user.getCreatedAt(), user.getLastModifiedAt());
     }
 
 
+    @Transactional(readOnly = true)
     public UserDto loginUser(LoginUserDto loginUserDto) {
-        System.out.println("로그인 요청: email=" + loginUserDto.getEmail());
-
         User user = userRepository.findByEmail(loginUserDto.getEmail())
                 .orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다."));
-
-        System.out.println("사용자 조회 성공: " + user.getEmail());
-
-        boolean passwordMatches = passwordEncoder.matches(loginUserDto.getPassword(), user.getPassword());
-        System.out.println("비밀번호 일치 여부: " + passwordMatches);
-
-        if (!passwordMatches) {
+        if (!passwordEncoder.matches(loginUserDto.getPassword(), user.getPassword())) {
             throw new IllegalStateException("비밀번호가 일치하지 않습니다.");
         }
 
-        System.out.println("로그인 성공: " + user.getEmail());
-
-        return new UserDto(
-                user.getEmail(), user.getPhone(), user.getNickname(),
-                user.getGrade(), user.getMileage(), user.getUseYn(),
-                user.getCreatedAt(), user.getLastModifiedAt()
-        );
+        return new UserDto(user.getEmail(), user.getPhone(), user.getNickname(),
+                user.getGrade(), user.getMileage(), user.isUseYn(),
+                user.getCreatedAt(), user.getLastModifiedAt());
     }
 
 
-
-
-    //이메일 중복 확인
+    @Transactional(readOnly = true)
     public boolean checkDuplicateEmail(String email) {
         return userRepository.existsByEmail(email);
     }
 
-    //회원 정보 조회 (이메일 기준)
+
+    @Transactional(readOnly = true)
     public UserDto findByEmail(String email) {
+        System.out.println("✅ findByEmail() 요청 이메일: " + email); // ✅ 로그 추가
+
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> {
+                    System.out.println("❌ 사용자를 찾을 수 없습니다: " + email); // ✅ 로그 추가
+                    return new IllegalStateException("사용자를 찾을 수 없습니다.");
+                });
 
         return new UserDto(
                 user.getEmail(), user.getPhone(), user.getNickname(),
-                user.getGrade(), user.getMileage(), user.getUseYn(),
+                user.getGrade(), user.getMileage(), user.isUseYn(),
                 user.getCreatedAt(), user.getLastModifiedAt()
         );
     }
 
-    //회원 정보 업데이트 (닉네임 & 전화번호 변경)
+    //회원 정보 업데이트 (DTO → Entity 변환 후 저장)
     @Transactional
-    public void updateUser(Long userSeq, UpdateUserDto updateUserDto) {
-        User user = userRepository.findById(userSeq)
+    public void updateUser(String email, UpdateUserDto updateUserDto) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다."));
 
         user.updateUserInfo(updateUserDto.getPhone(), updateUserDto.getNickname());
     }
 
-    //회원 탈퇴 (삭제)
+
     @Transactional
-    public void deleteUser(Long userSeq) {
-        userRepository.deleteById(userSeq);
+    public void deactivateUser(Long userSeq) {
+        User user = userRepository.findById(userSeq)
+                .orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다."));
+
+        user.deactivateUser(); //Soft Delete (useYn = false)
     }
 }
