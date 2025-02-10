@@ -1,11 +1,18 @@
 package com.example.bookstore.user.controller;
 
+import com.example.bookstore.user.dto.JoinUserDto;
+import com.example.bookstore.user.dto.LoginUserDto;
 import com.example.bookstore.user.dto.UpdateUserDto;
 import com.example.bookstore.user.dto.UserDto;
 import com.example.bookstore.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -14,35 +21,54 @@ public class UserController {
 
     private final UserService userService;
 
-    //마이페이지 조회 (유저 상세 정보)
-    @GetMapping("/user/detail")
-    public ResponseEntity<UserDto> getUserDetail(@RequestParam String email) {
-        return userService.findByEmail(email)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    //회원가입 API
+    @PostMapping("/join")
+    public String register(@RequestBody JoinUserDto joinUserDto) {
+        userService.save(joinUserDto);
+        return "회원가입이 완료되었습니다!";
     }
 
-    //회원 정보 수정 페이지 (현재 정보 불러오기)
-    @GetMapping("/user/edit")
-    public ResponseEntity<UserDto> getUserEdit(@RequestParam String email) {
-        return userService.findByEmail(email)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    //로그인 API (Spring Security 처리)
+    @PostMapping("/login")
+    public String login(@RequestBody LoginUserDto loginUserDto) {
+        return "로그인 성공!";
     }
 
-    //회원 정보 수정 (수정 후 `/users`로 리다이렉트)
-    @PostMapping
-    public ResponseEntity<String> updateUser(
-            @RequestParam Long userId,
-            @RequestBody UpdateUserDto updateUserDto) {
-        userService.update(userId, updateUserDto);
-        return ResponseEntity.ok("redirect:/users");
+    //마이페이지 조회 API
+    @GetMapping
+    public Optional<UserDto> myPage() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return userService.findByEmail(email);
     }
 
-    // 회원 탈퇴 (탈퇴 후 `/`로 리다이렉트)
-    @PostMapping("/delete")
-    public ResponseEntity<String> deleteUser(@RequestParam Long userId) {
-        userService.delete(userId);
-        return ResponseEntity.ok("redirect:/");
-    }
+//    //회원 정보 수정 API
+//    @PutMapping
+//    public String updateUser(@RequestBody UpdateUserDto updateUserDto) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String email = authentication.getName();
+//        Optional<UserDto> userDto = userService.findByEmail(email);
+//
+//        if (userDto.isPresent()) {
+//            userService.update(userDto.get().getEmail(), updateUserDto);
+//            return "회원 정보 수정이 완료되었습니다!";
+//        } else {
+//            return "사용자를 찾을 수 없습니다.";
+//        }
+//    }
+//
+//    // 회원 탈퇴 API
+//    @DeleteMapping
+//    public String deleteUser() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String email = authentication.getName();
+//        Optional<UserDto> userDto = userService.findByEmail(email);
+//
+//        if (userDto.isPresent()) {
+//            userService.delete(userDto.get().getEmail());
+//            return "회원 탈퇴가 완료되었습니다.";
+//        } else {
+//            return "사용자를 찾을 수 없습니다.";
+//        }
+//    }
 }

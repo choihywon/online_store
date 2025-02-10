@@ -15,16 +15,6 @@ public class UserDto {
     private final LocalDateTime createdAt;
     private final LocalDateTime lastModifiedAt;
 
-//    public UserDto(String email, String phone, String nickname, String grade, int mileage, char useYn, LocalDateTime createdAt, LocalDateTime lastModifiedAt) {
-//        this.email = email;
-//        this.phone = phone;
-//        this.nickname = nickname;
-//        this.grade = grade;
-//        this.mileage = mileage;
-//        this.useYn = useYn;
-//        this.createdAt = createdAt;
-//        this.lastModifiedAt = lastModifiedAt;
-//    }
     public UserDto(User user) {
         this.email = user.getEmail();
         this.phone = user.getPhone();
