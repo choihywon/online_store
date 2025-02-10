@@ -2,75 +2,87 @@ package com.example.bookstore.user.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
-
-import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Getter
+@Table(name = "users") // DB 테이블명과 일치
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_seq")
+    @Column(name = "user_seq") // 회원 ID (PK)
     private Long userSeq;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    @Column(name = "user_hash", nullable = false, unique = true, length = 255)
+    private String userHash; // 회원 고유 식별자
 
-    @Column(nullable = false)
-    private String password;
+    @Column(name = "password", nullable = false, length = 255)
+    private String password; // 비밀번호
 
-    @Column(nullable = false, length = 13)
-    private String phone;
+    @Column(name = "email", nullable = false, unique = true, length = 255)
+    private String email; // 이메일
 
-    @Column(nullable = false, length = 10)
-    private String nickname;
+    @Column(name = "phone", nullable = false, length = 20)
+    private String phone; // 전화번호
 
-    @Column(nullable = false)
-    private String grade = "BASIC";
+    @Column(name = "nickname", nullable = false, length = 50)
+    private String nickname; // 닉네임
 
-    @Column(nullable = false)
-    private int mileage = 0;
+    @Column(name = "grade", nullable = false, length = 20)
+    private String grade; // 등급
 
-    @Column(nullable = false)
-    private char useYn = 'Y';
+    @Column(name = "mileage", nullable = false)
+    private int mileage; // 마일리지
+
+    @Column(name = "use_yn", nullable = false)
+    private char useYn; // 회원 사용 여부
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt; // 회원 생성일시
+
+    @Column(name = "last_modified_at", nullable = false)
+    private LocalDateTime lastModifiedAt; // 회원 수정일시
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private UserRole role = UserRole.ROLE_USER;
+    @Column(name = "role", nullable = false)
+    private UserRole role; // 역할
 
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    @LastModifiedDate
-    private LocalDateTime lastModifiedAt = LocalDateTime.now();
-
-    //정적 팩토리 메서드 (회원가입 시 사용)
-    public static User createUser(String email, String password, String phone, String nickname) {
-        return new User(null, email, password, phone, nickname, "BASIC", 0, 'Y', UserRole.ROLE_USER, LocalDateTime.now(), LocalDateTime.now());
+    // 회원 정보 생성 시 자동으로 값 설정
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.lastModifiedAt = LocalDateTime.now();
+        this.userHash = UUID.randomUUID().toString(); // 회원 고유 식별자 자동 생성
     }
 
-    //회원 정보 업데이트
+    // 회원 정보 수정 시 `lastModifiedAt` 업데이트
+    @PreUpdate
+    protected void onUpdate() {
+        this.lastModifiedAt = LocalDateTime.now();
+    }
+
+    @Builder
+    public User(String email, String password, String phone, String nickname, String grade, int mileage, char useYn, UserRole role) {
+        this.userHash = UUID.randomUUID().toString(); // 🔹 회원 고유 식별자 자동 생성
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+        this.nickname = nickname;
+        this.grade = grade;
+        this.mileage = mileage;
+        this.useYn = useYn;
+        this.role = role;
+        this.createdAt = LocalDateTime.now();
+        this.lastModifiedAt = LocalDateTime.now();
+    }
+
+    // 회원 정보 업데이트 (닉네임 & 전화번호 변경)
     public void updateUserInfo(String phone, String nickname) {
         this.phone = phone;
         this.nickname = nickname;
         this.lastModifiedAt = LocalDateTime.now();
-    }
-
-    // 회원 탈퇴 (비활성화)
-    public void deactivate() {
-        this.useYn = 'N';
     }
 }

@@ -1,0 +1,50 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="ko" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>마이페이지</title>-->
+<!--    <link rel="stylesheet" href="/css/style.css">-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<h2>마이페이지</h2>-->
+<!--<p>이메일: <span id="userEmail"></span></p>-->
+<!--<p>닉네임: <span id="userNickname"></span></p>-->
+<!--<p>전화번호: <span id="userPhone"></span></p>-->
+
+<!--<script>-->
+<!--    function loadUserInfo() {-->
+<!--        let email = "test@example.com";  // 세션을 활용하여 로그인한 사용자 이메일 가져오기-->
+<!--        fetch(`/users/${email}`)-->
+<!--            .then(response => response.json())-->
+<!--            .then(data => {-->
+<!--                document.getElementById('userEmail').textContent = data.email;-->
+<!--                document.getElementById('userNickname').textContent = data.nickname;-->
+<!--                document.getElementById('userPhone').textContent = data.phone;-->
+<!--            })-->
+<!--            .catch(error => console.error('Error:', error));-->
+<!--    }-->
+
+<!--    loadUserInfo();-->
+<!--</script>-->
+
+<!--</body>-->
+<!--</html>-->
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>마이페이지</title>
+</head>
+<body>
+
+<h2>마이페이지</h2>
+<p>이메일: <span th:text="${user.email}"></span></p>
+<p>닉네임: <span th:text="${user.nickname}"></span></p>
+<p>전화번호: <span th:text="${user.phone}"></span></p>
+
+<p><a href="/">홈으로 이동</a></p>
+
+</body>
+</html>
