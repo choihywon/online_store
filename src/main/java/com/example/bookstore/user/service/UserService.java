@@ -19,15 +19,15 @@ public class UserService {
 
     @Transactional
     public UserDto joinUser(JoinUserDto joinUserDto) {
-        System.out.println("✅ 회원가입 요청 데이터: email=" + joinUserDto.getEmail() + ", password=" + joinUserDto.getPassword());
+        System.out.println("회원가입 요청 데이터: email=" + joinUserDto.getEmail() + ", password=" + joinUserDto.getPassword());
 
         if (joinUserDto.getPassword() == null || joinUserDto.getPassword().isEmpty()) {
-            throw new IllegalArgumentException("비밀번호를 입력해야 합니다.");
+            throw new IllegalArgumentException("비밀번호 입력 해야합니다.");
         }
 
         User user = User.builder()
                 .email(joinUserDto.getEmail())
-                .password(passwordEncoder.encode(joinUserDto.getPassword()))  // 🔹 비밀번호 암호화
+                .password(passwordEncoder.encode(joinUserDto.getPassword()))  //비밀번호 암호화
                 .phone(joinUserDto.getPhone())
                 .nickname(joinUserDto.getNickname())
                 .grade("일반")
@@ -45,21 +45,21 @@ public class UserService {
 
 
     public UserDto loginUser(LoginUserDto loginUserDto) {
-        System.out.println("✅ 로그인 요청: email=" + loginUserDto.getEmail());
+        System.out.println("로그인 요청: email=" + loginUserDto.getEmail());
 
         User user = userRepository.findByEmail(loginUserDto.getEmail())
-                .orElseThrow(() -> new IllegalStateException("❌ 사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다."));
 
-        System.out.println("✅ 사용자 조회 성공: " + user.getEmail());
+        System.out.println("사용자 조회 성공: " + user.getEmail());
 
         boolean passwordMatches = passwordEncoder.matches(loginUserDto.getPassword(), user.getPassword());
-        System.out.println("✅ 비밀번호 일치 여부: " + passwordMatches);
+        System.out.println("비밀번호 일치 여부: " + passwordMatches);
 
         if (!passwordMatches) {
-            throw new IllegalStateException("❌ 비밀번호가 일치하지 않습니다.");
+            throw new IllegalStateException("비밀번호가 일치하지 않습니다.");
         }
 
-        System.out.println("✅ 로그인 성공: " + user.getEmail());
+        System.out.println("로그인 성공: " + user.getEmail());
 
         return new UserDto(
                 user.getEmail(), user.getPhone(), user.getNickname(),
@@ -71,12 +71,12 @@ public class UserService {
 
 
 
-    // 🔹 이메일 중복 확인
+    //이메일 중복 확인
     public boolean checkDuplicateEmail(String email) {
         return userRepository.existsByEmail(email);
     }
 
-    // 🔹 회원 정보 조회 (이메일 기준)
+    //회원 정보 조회 (이메일 기준)
     public UserDto findByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다."));
@@ -88,7 +88,7 @@ public class UserService {
         );
     }
 
-    // 🔹 회원 정보 업데이트 (닉네임 & 전화번호 변경)
+    //회원 정보 업데이트 (닉네임 & 전화번호 변경)
     @Transactional
     public void updateUser(Long userSeq, UpdateUserDto updateUserDto) {
         User user = userRepository.findById(userSeq)
@@ -97,7 +97,7 @@ public class UserService {
         user.updateUserInfo(updateUserDto.getPhone(), updateUserDto.getNickname());
     }
 
-    // 🔹 회원 탈퇴 (삭제)
+    //회원 탈퇴 (삭제)
     @Transactional
     public void deleteUser(Long userSeq) {
         userRepository.deleteById(userSeq);
