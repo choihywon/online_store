@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>배송지 추가</title>
+</head>
+<body>
+
+<h2>배송지 추가</h2>
+
+<form action="/users/deliveryaddressinfo" method="post">
+  <label for="addressName">배송지 이름</label>
+  <input type="text" id="addressName" name="addressName" required>
+
+  <label for="zipcode">우편번호</label>
+  <input type="text" id="zipcode" name="zipcode" required>
+
+  <label for="streetAddr">도로명 주소</label>
+  <input type="text" id="streetAddr" name="streetAddr" required>
+
+  <label for="detailAddr">상세 주소</label>
+  <input type="text" id="detailAddr" name="detailAddr">
+
+  <label for="etc">기타</label>
+  <input type="text" id="etc" name="etc">
+
+  <button type="submit">추가하기</button>
+</form>
+
+<a href="/users/deliveryaddressinfo">배송지 목록으로 돌아가기</a>
+
+</body>
+</html>

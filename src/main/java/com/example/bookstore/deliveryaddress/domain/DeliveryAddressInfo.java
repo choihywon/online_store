@@ -17,7 +17,7 @@ public class DeliveryAddressInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "info_seq") // 🚀 기본 키
+    @Column(name = "deliveries_info_seq") // 🚀 기본 키
     private Long id;
 
     // 🚀 User와의 연관 관계 설정 (ManyToOne)

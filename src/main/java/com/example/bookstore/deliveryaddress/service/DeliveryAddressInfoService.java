@@ -1,7 +1,7 @@
 package com.example.bookstore.deliveryaddress.service;
 
-import com.example.bookstore.deliveryaddress.domain.DeliveryAddressInfo;
 import com.example.bookstore.deliveryaddress.dto.DeliveryAddressInfoDto;
+import com.example.bookstore.deliveryaddress.domain.DeliveryAddressInfo;
 import com.example.bookstore.deliveryaddress.repository.DeliveryAddressInfoRepository;
 import com.example.bookstore.user.domain.User;
 import com.example.bookstore.user.repository.UserRepository;
@@ -20,9 +20,9 @@ public class DeliveryAddressInfoService {
     private final DeliveryAddressInfoRepository deliveryAddressInfoRepository;
     private final UserRepository userRepository;
 
-    /** 🚀 배송지 목록 조회 */
+    /** 🚀 이메일을 기반으로 배송지 목록 조회 */
     @Transactional(readOnly = true)
-    public List<DeliveryAddressInfoDto> findByUser(String email) {
+    public List<DeliveryAddressInfoDto> findByUserEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다."));
 
@@ -36,14 +36,41 @@ public class DeliveryAddressInfoService {
                 .collect(Collectors.toList());
     }
 
-    // 🚀 배송지 저장 (회원 이메일 기반)
+    @Transactional(readOnly = true)
+    public DeliveryAddressInfoDto findByUserEmailAndAddressName(String email, String addressName) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다. (email: " + email + ")"));
+
+        System.out.println("📌 [DEBUG] 찾는 사용자: " + user.getEmail());
+        System.out.println("📌 [DEBUG] 찾는 배송지 이름: " + addressName);
+
+        Optional<DeliveryAddressInfo> deliveryAddressOpt = deliveryAddressInfoRepository.findByUserAndAddressName(user, addressName);
+
+        if (deliveryAddressOpt.isEmpty()) {
+            System.out.println("🚨 [ERROR] 해당 배송지를 찾을 수 없습니다. (addressName: " + addressName + ")");
+            throw new IllegalStateException("배송지를 찾을 수 없습니다. (addressName: " + addressName + ")");
+        }
+
+        DeliveryAddressInfo deliveryAddress = deliveryAddressOpt.get();
+
+        return new DeliveryAddressInfoDto(
+                deliveryAddress.getAddressName(),
+                deliveryAddress.getZipcode(),
+                deliveryAddress.getStreetAddr(),
+                deliveryAddress.getDetailAddr(),
+                deliveryAddress.getEtc()
+        );
+    }
+
+
+    /** 🚀 배송지 추가 */
     @Transactional
     public void save(String email, DeliveryAddressInfoDto dto) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다."));
 
         DeliveryAddressInfo deliveryAddress = DeliveryAddressInfo.builder()
-                .user(user) // 🚀 User 객체로 저장
+                .user(user)
                 .addressName(dto.getAddressName())
                 .zipcode(dto.getZipcode())
                 .streetAddr(dto.getStreetAddr())
@@ -54,13 +81,16 @@ public class DeliveryAddressInfoService {
         deliveryAddressInfoRepository.save(deliveryAddress);
     }
 
-    /** 🚀 배송지 수정 */
+    /** 🚀 이메일과 주소명을 기반으로 배송지 수정 */
     @Transactional
-    public void update(Long id, DeliveryAddressInfoDto dto) {
-        DeliveryAddressInfo deliveryAddressInfo = deliveryAddressInfoRepository.findById(id)
+    public void updateByEmailAndAddressName(String email, DeliveryAddressInfoDto dto) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다."));
+
+        DeliveryAddressInfo deliveryAddress = deliveryAddressInfoRepository.findByUserAndAddressName(user, dto.getAddressName())
                 .orElseThrow(() -> new IllegalStateException("배송지를 찾을 수 없습니다."));
 
-        deliveryAddressInfo.updateDeliveryAddress(
+        deliveryAddress.updateDeliveryAddress(
                 dto.getAddressName(),
                 dto.getZipcode(),
                 dto.getStreetAddr(),
@@ -69,27 +99,15 @@ public class DeliveryAddressInfoService {
         );
     }
 
-    /** 🚀 배송지 삭제 */
+    /** 🚀 이메일과 주소명을 기반으로 배송지 삭제 */
     @Transactional
-    public void delete(Long id) {
-        deliveryAddressInfoRepository.deleteById(id);
-    }
-
-    /** 🚀 배송지 이름으로 조회 */
-    @Transactional(readOnly = true)
-    public DeliveryAddressInfoDto findByUserAndAddressName(String email, String addressName) {
+    public void deleteByEmailAndAddressName(String email, String addressName) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다."));
 
-        DeliveryAddressInfo deliveryAddressInfo = deliveryAddressInfoRepository.findByUserAndAddressName(user, addressName)
+        DeliveryAddressInfo deliveryAddress = deliveryAddressInfoRepository.findByUserAndAddressName(user, addressName)
                 .orElseThrow(() -> new IllegalStateException("배송지를 찾을 수 없습니다."));
 
-        return new DeliveryAddressInfoDto(
-                deliveryAddressInfo.getAddressName(),
-                deliveryAddressInfo.getZipcode(),
-                deliveryAddressInfo.getStreetAddr(),
-                deliveryAddressInfo.getDetailAddr(),
-                deliveryAddressInfo.getEtc()
-        );
+        deliveryAddressInfoRepository.delete(deliveryAddress);
     }
 }
