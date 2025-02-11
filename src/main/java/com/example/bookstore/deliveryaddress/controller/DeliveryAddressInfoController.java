@@ -73,7 +73,17 @@ public class DeliveryAddressInfoController {
         deliveryAddressInfoService.updateByEmailAndAddressName(email, dto);
         return "redirect:/users/deliveryaddressinfo";
     }
+    /** 🚀 배송지 삭제 */
+    @PostMapping("/delete")
+    public String delete(@RequestParam("addressName") String addressName) {
+        String email = getAuthenticatedUserEmail();
+        if (email == null) {
+            return "redirect:/users/login";
+        }
 
+        deliveryAddressInfoService.deleteByEmailAndAddressName(email, addressName);
+        return "redirect:/users/deliveryaddressinfo";
+    }
     /** 🚀 현재 로그인한 사용자 이메일 가져오기 */
     private String getAuthenticatedUserEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
