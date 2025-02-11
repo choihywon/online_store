@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
@@ -15,16 +16,22 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("해당 이메일을 찾을 수 없습니다: " + email));
+        System.out.println("🔍 [로그인 시도] 이메일: " + email);
 
-        System.out.println("✅ UserDetailsService에서 찾은 사용자: " + user.getEmail()); // ✅ 로그 추가
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    System.out.println("❌ [로그인 실패] 사용자를 찾을 수 없습니다: " + email);
+                    return new UsernameNotFoundException("해당 이메일을 찾을 수 없습니다: " + email);
+                });
+
+        System.out.println("✅ [로그인 성공] 사용자 이메일: " + user.getEmail());
+        System.out.println("✅ [저장된 역할]: " + user.getRole().name()); // ✅ 역할 확인
 
         return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getEmail())  // ✅ username을 email로 설정
+                .username(user.getEmail())
                 .password(user.getPassword())
-                .roles(user.getRole().name())
+                .authorities(user.getRole().name()) //
                 .build();
-    }
 
+    }
 }

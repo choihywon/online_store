@@ -7,6 +7,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+
+
 @Configuration
 public class SecurityConfig {
 
@@ -19,18 +21,19 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())  // ✅ CSRF 비활성화
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/users/join", "/users/signup", "/users/login", "/users/check-email", "/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/users/mypage").authenticated()
+                        .requestMatchers("/users/mypage").hasAuthority("ROLE_USER") //
+                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN") //
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
-                        .loginPage("/users/login") //로그인 페이지 설정
-                        .usernameParameter("email") //이메일을 ID로 사용
+                        .loginPage("/users/login")
+                        .usernameParameter("email")
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/", true) //로그인 성공 시 홈으로 이동
-                        .failureUrl("/users/login?error=true") // 로그인 실패 시 login 페이지에 머무름
+                        .defaultSuccessUrl("/", true)
+                        .failureUrl("/users/login?error=true")
                         .permitAll()
                 )
                 .logout(logout -> logout
@@ -38,10 +41,12 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/")
                         .permitAll()
                 )
-                .userDetailsService(userDetailsService);  //사용자 인증 서비스 등록
+                .userDetailsService(userDetailsService);
 
         return http.build();
     }
+
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

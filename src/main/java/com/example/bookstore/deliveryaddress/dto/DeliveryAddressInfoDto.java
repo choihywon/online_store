@@ -8,10 +8,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class DeliveryAddressInfoDto {
-    private String addressName;  // ✅ destName → addressName 변경
+    private String addressName;
     private String zipcode;
-    private String streetAddr;   // ✅ roadAddress → streetAddr 변경
-    private String detailAddr;   // ✅ addressDetail → detailAddr 변경
+    private String streetAddr;
+    private String detailAddr;
     private String etc;
 
     public DeliveryAddressInfoDto(String addressName, String zipcode, String streetAddr, String detailAddr, String etc) {

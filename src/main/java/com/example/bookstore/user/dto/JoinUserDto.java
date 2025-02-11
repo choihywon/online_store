@@ -1,8 +1,6 @@
 package com.example.bookstore.user.dto;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Getter;
 import lombok.Setter;
 
 @Getter
@@ -13,7 +11,7 @@ public class JoinUserDto {
     private String phone;
     private String nickname;
     private String zipcode;
-    private String streetAddr;    // ✅ 올바른 필드명 사용
-    private String detailAddr;    // ✅ 올바른 필드명 사용
+    private String streetAddr;
+    private String detailAddr;
     private String etc;
 }
