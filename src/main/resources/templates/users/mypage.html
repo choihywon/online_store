@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지</title>
+    <script>
+        function updateUser() {
+            let formData = {
+                phone: document.getElementById('newPhone').value,
+                nickname: document.getElementById('newNickname').value
+            };
+
+            fetch('/users/mypage/edit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert("회원 정보가 수정되었습니다.");
+                        window.location.reload(); // 수정 후 새로고침
+                    } else {
+                        alert("회원 정보 수정 실패");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("회원 정보 수정 중 오류가 발생했습니다.");
+                });
+        }
+    </script>
+</head>
+<body>
+
+<h2>마이페이지</h2>
+
+<!-- 회원 정보 표시 -->
+<div>
+    <p>이메일: <span th:text="${user.email}"></span></p>
+    <p>닉네임: <span id="nickname" th:text="${user.nickname}"></span></p>
+    <p>전화번호: <span id="phone" th:text="${user.phone}"></span></p>
+    <p>등급: <span th:text="${user.grade}"></span></p>
+    <p>마일리지: <span th:text="${user.mileage}"></span></p>
+    <p>가입일: <span th:text="${user.createdAt}"></span></p>
+</div>
+
+<!-- 회원 정보 수정 폼 -->
+<h3>회원 정보 수정</h3>
+<form id="updateForm">
+    <label for="newNickname">닉네임</label>
+    <input type="text" id="newNickname" name="nickname" required>
+
+    <label for="newPhone">전화번호</label>
+    <input type="text" id="newPhone" name="phone" required>
+
+    <button type="button" onclick="updateUser()">수정하기</button>
+</form>
+
+<a href="/users/edit">회원 정보 수정 페이지로 이동</a>
+<form action="/users/delete" method="post">
+    <button type="submit">회원 탈퇴</button>
+</form>
+
+</body>
+</html>
