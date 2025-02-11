@@ -48,10 +48,10 @@ public class UserService {
 
         // ✅ 회원가입 시 기본 배송지 추가
         DeliveryAddressInfoDto defaultAddress = new DeliveryAddressInfoDto(
-                "기본 배송지", // ✅ 기본 배송지 이름
+                "기본 배송지",
                 joinUserDto.getZipcode(),
-                joinUserDto.getStreetAddr(),
-                joinUserDto.getDetailAddr(),
+                joinUserDto.getStreetAddr(),   // ✅ 변경된 필드명 사용
+                joinUserDto.getDetailAddr(),   // ✅ 변경된 필드명 사용
                 joinUserDto.getEtc()
         );
         deliveryAddressInfoService.save(user.getEmail(), defaultAddress);
@@ -60,6 +60,7 @@ public class UserService {
                 user.getGrade(), user.getMileage(), user.isUseYn(),
                 user.getCreatedAt(), user.getLastModifiedAt());
     }
+
 
 
     @Transactional(readOnly = true)

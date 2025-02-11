@@ -26,10 +26,10 @@ public class DeliveryAddressInfoService {
 
         return deliveryAddressInfoRepository.findByUser(user).stream()
                 .map(info -> new DeliveryAddressInfoDto(
-                        info.getAddressName(),
+                        info.getAddressName(), // ✅ destName → addressName 변경
                         info.getZipcode(),
-                        info.getStreetAddr(),
-                        info.getDetailAddr(),
+                        info.getStreetAddr(),  // ✅ roadAddress → streetAddr 변경
+                        info.getDetailAddr(),  // ✅ addressDetail → detailAddr 변경
                         info.getEtc()))
                 .collect(Collectors.toList());
     }
@@ -39,18 +39,16 @@ public class DeliveryAddressInfoService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다."));
 
-        // ✅ 기본 배송지가 존재하는지 확인
         if (deliveryAddressInfoRepository.existsByUserAndAddressName(user, dto.getAddressName())) {
             throw new IllegalStateException("이미 등록된 배송지 별칭입니다.");
         }
 
-        // ✅ 기본 배송지 추가
         DeliveryAddressInfo deliveryAddressInfo = DeliveryAddressInfo.builder()
                 .user(user)
-                .addressName(dto.getAddressName())
+                .addressName(dto.getAddressName()) // ✅ destName → addressName 변경
                 .zipcode(dto.getZipcode())
-                .streetAddr(dto.getStreetAddr())
-                .detailAddr(dto.getDetailAddr())
+                .streetAddr(dto.getStreetAddr())  // ✅ roadAddress → streetAddr 변경
+                .detailAddr(dto.getDetailAddr())  // ✅ addressDetail → detailAddr 변경
                 .etc(dto.getEtc())
                 .build();
 

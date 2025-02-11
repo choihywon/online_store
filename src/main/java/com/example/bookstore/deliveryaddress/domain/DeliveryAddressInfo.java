@@ -9,29 +9,31 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "delivery_address_info")
+@AllArgsConstructor
+@Builder
+@Table(name = "deliveries_info") // ✅ 정확한 테이블명 설정
 public class DeliveryAddressInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "delivery_address_info_seq")
-    private Long deliveryAddressInfoSeq;
+    @Column(name = "deliveries_info_seq") // ✅ PK 컬럼명 변경 없음
+    private Long deliveriesInfoSeq;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_seq", nullable = false)
     private User user;
 
-    @Column(name = "address_name", nullable = false, length = 100)
+    @Column(name = "address_name", nullable = false, length = 100) // ✅ dest_name → address_name 변경
     private String addressName;
+
+    @Column(name = "street_addr", nullable = false, length = 255) // ✅ road_address → street_addr 변경
+    private String streetAddr;
+
+    @Column(name = "detail_addr", nullable = false, length = 255) // ✅ address_detail → detail_addr 변경
+    private String detailAddr;
 
     @Column(name = "zipcode", nullable = false, length = 10)
     private String zipcode;
-
-    @Column(name = "street_addr", nullable = false, length = 255)
-    private String streetAddr;
-
-    @Column(name = "detail_addr", nullable = false, length = 255)
-    private String detailAddr;
 
     @Column(name = "etc", length = 255)
     private String etc;
@@ -53,19 +55,7 @@ public class DeliveryAddressInfo {
         this.lastModifiedAt = LocalDateTime.now();
     }
 
-    @Builder
-    public DeliveryAddressInfo(User user, String addressName, String zipcode,
-                               String streetAddr, String detailAddr, String etc) {
-        this.user = user;
-        this.addressName = addressName;
-        this.zipcode = zipcode;
-        this.streetAddr = streetAddr;
-        this.detailAddr = detailAddr;
-        this.etc = etc;
-        this.createdAt = LocalDateTime.now();
-        this.lastModifiedAt = LocalDateTime.now();
-    }
-
+    // ✅ 배송지 정보 업데이트 메서드 (컬럼명 변경 반영)
     public void updateDeliveryAddress(String addressName, String zipcode,
                                       String streetAddr, String detailAddr, String etc) {
         this.addressName = addressName;
