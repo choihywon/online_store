@@ -20,12 +20,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> {
-                    System.out.println("❌ [로그인 실패] 사용자를 찾을 수 없습니다: " + email);
+                    System.out.println("로그인 실패 " + email);
                     return new UsernameNotFoundException("해당 이메일을 찾을 수 없습니다: " + email);
                 });
 
-        System.out.println("✅ [로그인 성공] 사용자 이메일: " + user.getEmail());
-        System.out.println("✅ [저장된 역할]: " + user.getRole().name()); // ✅ 역할 확인
+        System.out.println("로그인 성공 : " + user.getEmail());
+        System.out.println("저장된 역할 " + user.getRole().name());
 
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())

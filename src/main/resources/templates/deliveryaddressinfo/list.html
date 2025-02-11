@@ -26,7 +26,7 @@
   </tr>
   </thead>
   <tbody>
-  <!-- 🚀 배송지 목록 표시 -->
+
   <tr th:each="delivery : ${deliveries}">
     <td th:text="${delivery.addressName}"></td>
     <td th:text="${delivery.zipcode}"></td>
@@ -34,12 +34,11 @@
     <td th:text="${delivery.detailAddr}"></td>
     <td th:text="${delivery.etc}"></td>
     <td>
-      <!-- 🚀 배송지 수정 버튼 -->
+
       <a th:href="@{/users/deliveryaddressinfo/edit(addressName=${delivery.addressName})}">
         <button>수정</button>
       </a>
 
-      <!-- 🚀 배송지 삭제 버튼 -->
       <form th:action="@{/users/deliveryaddressinfo/delete}" method="post" style="display:inline;">
         <input type="hidden" name="addressName" th:value="${delivery.addressName}">
         <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>

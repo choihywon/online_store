@@ -18,7 +18,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final DeliveryAddressInfoService deliveryAddressInfoService; // 🚀 추가됨
 
-    // 🚀 이메일로 유저 찾기
     @Transactional(readOnly = true)
     public UserDto findByEmail(String email) {
         User user = userRepository.findByEmail(email)
@@ -30,7 +29,6 @@ public class UserService {
         );
     }
 
-    // 🚀 이메일 중복 확인
     @Transactional(readOnly = true)
     public boolean checkDuplicateEmail(String email) {
         return userRepository.existsByEmail(email);
@@ -42,7 +40,6 @@ public class UserService {
             throw new IllegalStateException("이미 가입된 이메일입니다.");
         }
 
-        // ✅ user_hash 생성 (이메일 기반 해시 값)
         String userHash = generateUserHash(joinUserDto.getEmail());
 
         User user = User.builder()
@@ -54,12 +51,11 @@ public class UserService {
                 .mileage(0)
                 .useYn('Y')
                 .role(UserRole.ROLE_USER)
-                .userHash(userHash) // 🔴 필수값 추가
+                .userHash(userHash)
                 .build();
 
         userRepository.save(user);
 
-        // 🚀 기본 배송지 추가
         addDefaultDeliveryAddress(user, joinUserDto);
 
         return new UserDto(
@@ -69,11 +65,11 @@ public class UserService {
         );
     }
 
+    //이게 왜 있냐? Hash를 쿼리에서 지우기도 좀 그렇고 어떻게 할 지 생각하다가 사람들이 ㄹㅇ hash로 변환한걸 보고 복붙함
     private String generateUserHash(String email) {
         return Integer.toHexString(email.hashCode()); // 간단한 해시 예제
     }
 
-    // 🚀 기본 배송지 추가 메서드 (User 객체 기반)
     private void addDefaultDeliveryAddress(User user, JoinUserDto joinUserDto) {
         DeliveryAddressInfoDto defaultAddress = new DeliveryAddressInfoDto(
                 "기본 배송지",
@@ -83,14 +79,10 @@ public class UserService {
                 joinUserDto.getEtc()
         );
 
-        // 🚀 DeliveryAddressInfoService를 사용하여 기본 배송지 저장
         deliveryAddressInfoService.save(user.getEmail(), defaultAddress);
     }
 
 
-
-
-    // 🚀 회원 정보 수정
     @Transactional
     public void updateUser(String email, UpdateUserDto updateUserDto) {
         User user = userRepository.findByEmail(email)
@@ -99,11 +91,10 @@ public class UserService {
         user.updateUserInfo(updateUserDto.getPhone(), updateUserDto.getNickname());
     }
 
-    // 🚀 회원 탈퇴
     @Transactional
     public void deactivateUser(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다."));
-        user.deactivateUser(); // Soft Delete (useYn = 'N')
+        user.deactivateUser();
     }
 }

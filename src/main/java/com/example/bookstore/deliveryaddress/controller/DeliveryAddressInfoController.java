@@ -18,7 +18,6 @@ public class DeliveryAddressInfoController {
 
     private final DeliveryAddressInfoService deliveryAddressInfoService;
 
-    /** 🚀 배송지 목록 조회 */
     @GetMapping
     public String listPage(Model model) {
         String email = getAuthenticatedUserEmail();
@@ -31,13 +30,11 @@ public class DeliveryAddressInfoController {
         return "deliveryaddressinfo/list";
     }
 
-    /** 🚀 배송지 등록 페이지 */
     @GetMapping("/create")
     public String createPage() {
         return "deliveryaddressinfo/create";
     }
 
-    /** 🚀 배송지 등록 */
     @PostMapping
     public String save(@ModelAttribute DeliveryAddressInfoDto dto) {
         String email = getAuthenticatedUserEmail();
@@ -49,7 +46,6 @@ public class DeliveryAddressInfoController {
         return "redirect:/users/deliveryaddressinfo";
     }
 
-    /** 🚀 배송지 수정 페이지 */
     @GetMapping("/edit")
     public String editPage(@RequestParam("addressName") String addressName, Model model) {
         String email = getAuthenticatedUserEmail();
@@ -62,7 +58,6 @@ public class DeliveryAddressInfoController {
         return "deliveryaddressinfo/edit";
     }
 
-    /** 🚀 배송지 수정 */
     @PostMapping("/update")
     public String update(@ModelAttribute DeliveryAddressInfoDto dto) {
         String email = getAuthenticatedUserEmail();
@@ -73,7 +68,8 @@ public class DeliveryAddressInfoController {
         deliveryAddressInfoService.updateByEmailAndAddressName(email, dto);
         return "redirect:/users/deliveryaddressinfo";
     }
-    /** 🚀 배송지 삭제 */
+
+
     @PostMapping("/delete")
     public String delete(@RequestParam("addressName") String addressName) {
         String email = getAuthenticatedUserEmail();
@@ -84,7 +80,8 @@ public class DeliveryAddressInfoController {
         deliveryAddressInfoService.deleteByEmailAndAddressName(email, addressName);
         return "redirect:/users/deliveryaddressinfo";
     }
-    /** 🚀 현재 로그인한 사용자 이메일 가져오기 */
+
+
     private String getAuthenticatedUserEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getName() == null) {

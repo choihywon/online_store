@@ -20,7 +20,6 @@ public class DeliveryAddressInfoService {
     private final DeliveryAddressInfoRepository deliveryAddressInfoRepository;
     private final UserRepository userRepository;
 
-    /** 🚀 이메일을 기반으로 배송지 목록 조회 */
     @Transactional(readOnly = true)
     public List<DeliveryAddressInfoDto> findByUserEmail(String email) {
         User user = userRepository.findByEmail(email)
@@ -41,14 +40,14 @@ public class DeliveryAddressInfoService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다. (email: " + email + ")"));
 
-        System.out.println("📌 [DEBUG] 찾는 사용자: " + user.getEmail());
-        System.out.println("📌 [DEBUG] 찾는 배송지 이름: " + addressName);
+        System.out.println("찾는 사용자: " + user.getEmail());
+        System.out.println(" 찾는 배송지 이름: " + addressName);
 
         Optional<DeliveryAddressInfo> deliveryAddressOpt = deliveryAddressInfoRepository.findByUserAndAddressName(user, addressName);
 
         if (deliveryAddressOpt.isEmpty()) {
-            System.out.println("🚨 [ERROR] 해당 배송지를 찾을 수 없습니다. (addressName: " + addressName + ")");
-            throw new IllegalStateException("배송지를 찾을 수 없습니다. (addressName: " + addressName + ")");
+            System.out.println("addressName: " + addressName + ")");
+            throw new IllegalStateException("addressName: " + addressName + ")");
         }
 
         DeliveryAddressInfo deliveryAddress = deliveryAddressOpt.get();
@@ -63,7 +62,7 @@ public class DeliveryAddressInfoService {
     }
 
 
-    /** 🚀 배송지 추가 */
+
     @Transactional
     public void save(String email, DeliveryAddressInfoDto dto) {
         User user = userRepository.findByEmail(email)
@@ -81,7 +80,7 @@ public class DeliveryAddressInfoService {
         deliveryAddressInfoRepository.save(deliveryAddress);
     }
 
-    /** 🚀 이메일과 주소명을 기반으로 배송지 수정 */
+
     @Transactional
     public void updateByEmailAndAddressName(String email, DeliveryAddressInfoDto dto) {
         User user = userRepository.findByEmail(email)
@@ -99,7 +98,7 @@ public class DeliveryAddressInfoService {
         );
     }
 
-    /** 🚀 이메일과 주소명을 기반으로 배송지 삭제 */
+
     @Transactional
     public void deleteByEmailAndAddressName(String email, String addressName) {
         User user = userRepository.findByEmail(email)
