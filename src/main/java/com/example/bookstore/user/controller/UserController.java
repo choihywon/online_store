@@ -38,6 +38,17 @@ public class UserController {
     public String loginPage() {
         return "login";
     }
+    // 🚀 이메일 중복 체크 API
+    @GetMapping("/check-email")
+    public ResponseEntity<?> checkEmail(@RequestParam String email) {
+        boolean isDuplicate = userService.checkDuplicateEmail(email);
+        if (isDuplicate) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"message\":\"이미 사용 중인 이메일입니다.\"}");
+        } else {
+            return ResponseEntity.ok("{\"message\":\"사용 가능한 이메일입니다.\"}");
+        }
+    }
+
 
     // 🚀 마이페이지
     @GetMapping("/mypage")
