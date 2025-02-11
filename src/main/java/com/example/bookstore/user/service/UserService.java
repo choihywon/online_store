@@ -1,4 +1,6 @@
 package com.example.bookstore.user.service;
+import com.example.bookstore.deliveryaddress.dto.DeliveryAddressInfoDto;
+import com.example.bookstore.deliveryaddress.service.DeliveryAddressInfoService;
 import com.example.bookstore.user.domain.User;
 import com.example.bookstore.user.domain.UserRole;
 import com.example.bookstore.user.dto.JoinUserDto;
@@ -10,12 +12,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final DeliveryAddressInfoService deliveryAddressInfoService;
 
     @Transactional
     public UserDto joinUser(JoinUserDto joinUserDto) {
@@ -24,12 +27,12 @@ public class UserService {
             throw new IllegalStateException("이미 가입된 이메일입니다.");
         }
 
-        //비밀번호 검증
+        // 비밀번호 검증
         if (joinUserDto.getPassword() == null || joinUserDto.getPassword().isEmpty()) {
             throw new IllegalArgumentException("비밀번호를 입력해야 합니다.");
         }
 
-
+        // ✅ 회원 정보 저장
         User user = User.builder()
                 .email(joinUserDto.getEmail())
                 .password(passwordEncoder.encode(joinUserDto.getPassword()))
@@ -42,6 +45,17 @@ public class UserService {
                 .build();
 
         userRepository.save(user);
+
+        // ✅ 회원가입 시 기본 배송지 추가
+        DeliveryAddressInfoDto defaultAddress = new DeliveryAddressInfoDto(
+                "기본 배송지", // ✅ 기본 배송지 이름
+                joinUserDto.getZipcode(),
+                joinUserDto.getStreetAddr(),
+                joinUserDto.getDetailAddr(),
+                joinUserDto.getEtc()
+        );
+        deliveryAddressInfoService.save(user.getEmail(), defaultAddress);
+
         return new UserDto(user.getEmail(), user.getPhone(), user.getNickname(),
                 user.getGrade(), user.getMileage(), user.isUseYn(),
                 user.getCreatedAt(), user.getLastModifiedAt());

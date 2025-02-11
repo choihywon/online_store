@@ -15,4 +15,5 @@ public class JoinUserDto {
     private String zipcode;
     private String streetAddr;
     private String detailAddr;
+    private String etc;
 }
