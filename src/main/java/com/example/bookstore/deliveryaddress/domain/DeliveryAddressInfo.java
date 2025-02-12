@@ -12,16 +12,16 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@Table(name = "deliveries_info") // 🚀 테이블 매핑
+@Table(name = "deliveries_info")
 public class DeliveryAddressInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "deliveries_info_seq") // 🚀 기본 키
+    @Column(name = "deliveries_info_seq")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_seq", nullable = false) // `user_seq`를 외래키로 지정
+    @JoinColumn(name = "user_seq", nullable = false)
     private User user;
 
     @Column(name = "address_name", nullable = false)
@@ -57,8 +57,7 @@ public class DeliveryAddressInfo {
     }
 
     @Builder
-    public DeliveryAddressInfo(User user, String addressName, String zipcode,
-                               String streetAddr, String detailAddr, String etc) {
+    public DeliveryAddressInfo(User user, String addressName, String zipcode, String streetAddr, String detailAddr, String etc) {
         this.user = user;
         this.addressName = addressName;
         this.zipcode = zipcode;
@@ -67,8 +66,7 @@ public class DeliveryAddressInfo {
         this.etc = etc;
     }
 
-    public void updateDeliveryAddress(String addressName, String zipcode, String streetAddr,
-                                      String detailAddr, String etc) {
+    public void updateDeliveryAddress(String addressName, String zipcode, String streetAddr, String detailAddr, String etc) {
         this.addressName = addressName;
         this.zipcode = zipcode;
         this.streetAddr = streetAddr;

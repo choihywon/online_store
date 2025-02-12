@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@Table(name = "users") // ✅ 테이블명 설정
+@Table(name = "users")
 public class User {
 
     @Id
@@ -64,14 +64,13 @@ public class User {
         this.lastModifiedAt = LocalDateTime.now();
     }
 
-    // 🚀 회원 정보 업데이트
     public void updateUserInfo(String phone, String nickname) {
         this.phone = phone;
         this.nickname = nickname;
         this.lastModifiedAt = LocalDateTime.now();
     }
 
-    // 🚀 회원 탈퇴 (Soft Delete)
+
     public void deactivateUser() {
         this.useYn = 'N';
         this.lastModifiedAt = LocalDateTime.now();

@@ -20,7 +20,7 @@ public class UserController {
 
     private final UserService userService;
 
-    // 🚀 회원가입 페이지
+
     @GetMapping("/join")
     public String joinPage() {
         return "join";
@@ -39,14 +39,18 @@ public class UserController {
 
 
     @GetMapping("/check-email")
-    public ResponseEntity<?> checkEmail(@RequestParam String email) {
+    public ResponseEntity<String> checkEmail(@RequestParam String email) {
         boolean isDuplicate = userService.checkDuplicateEmail(email);
+
         if (isDuplicate) {
+            System.out.println("이미 사용 중인 이메일: " + email);
             return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"message\":\"이미 사용 중인 이메일입니다.\"}");
         } else {
+            System.out.println("사용 가능한 이메일: " + email);
             return ResponseEntity.ok("{\"message\":\"사용 가능한 이메일입니다.\"}");
         }
     }
+
 
 
 

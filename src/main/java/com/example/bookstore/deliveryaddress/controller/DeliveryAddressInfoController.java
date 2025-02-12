@@ -59,15 +59,28 @@ public class DeliveryAddressInfoController {
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute DeliveryAddressInfoDto dto) {
+    public String update(@RequestParam("originalAddressName") String originalAddressName, @ModelAttribute DeliveryAddressInfoDto dto) {
+
         String email = getAuthenticatedUserEmail();
         if (email == null) {
+            System.out.println("로그인하지 않은 사용자가 배송지 업데이트를 시도했습니다.");
             return "redirect:/users/login";
         }
 
-        deliveryAddressInfoService.updateByEmailAndAddressName(email, dto);
-        return "redirect:/users/deliveryaddressinfo";
+        System.out.println("기존 배송지 이름: " + originalAddressName);
+        System.out.println("새 배송지 이름: " + dto.getAddressName());
+
+        try {
+            deliveryAddressInfoService.updateByEmailAddressName(email, originalAddressName, dto);
+            System.out.println("배송지 업데이트");
+            return "redirect:/users/deliveryaddressinfo";
+        } catch (IllegalStateException e) {
+            System.out.println("업데이트 실패: " + e.getMessage());
+            return "redirect:/users/deliveryaddressinfo";
+        }
     }
+
+
 
 
     @PostMapping("/delete")

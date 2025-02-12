@@ -10,7 +10,8 @@
 <h2>배송지 수정</h2>
 
 <form th:action="@{/users/deliveryaddressinfo/update}" method="post">
-    <input type="hidden" name="email" th:value="${email}">
+    <!-- 기존 배송지 이름을 숨겨서 서버에 전달 -->
+    <input type="hidden" name="originalAddressName" th:value="${delivery.addressName}">
 
     <label for="addressName">배송지 이름</label>
     <input type="text" id="addressName" name="addressName" th:value="${delivery.addressName}" required>
@@ -29,6 +30,7 @@
 
     <button type="submit">수정하기</button>
 </form>
+
 
 
 <a href="/users/deliveryaddressinfo">배송지 목록으로 돌아가기</a>
