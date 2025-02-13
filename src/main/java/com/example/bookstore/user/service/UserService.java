@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final DeliveryAddressInfoService deliveryAddressInfoService; // 🚀 추가됨
+    private final DeliveryAddressInfoService deliveryAddressInfoService;
 
     @Transactional(readOnly = true)
     public UserDto findByEmail(String email) {
@@ -33,7 +33,7 @@ public class UserService {
     }
     @Transactional(readOnly = true)
     public UserDto findUserByEmail(String email) {
-        User user = userRepository.findByEmail(email) // ✅ findByEmail() 사용
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다."));
 
         return new UserDto(
@@ -91,7 +91,7 @@ public class UserService {
         return Integer.toHexString(email.hashCode()); // 간단한 해시 예제
     }
 
-    /** ✅ 모든 사용자 조회 */
+
     @Transactional(readOnly = true)
     public List<UserDto> findAllUsers() {
         return userRepository.findAll().stream()
@@ -108,7 +108,7 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    /** ✅ 특정 사용자 ID로 상세 조회 */
+
     @Transactional(readOnly = true)
     public UserDto findUserById(Long userSeq) {
         User user = userRepository.findById(userSeq)

@@ -16,6 +16,6 @@ public class BlacklistDto {
     private String reason;
     private LocalDateTime blacklistedAt;
     private LocalDateTime unleashedAt;
-    private String blacklistedBy;  // ✅ 관리자 이메일 저장
-    private String unleashedBy;  // ✅ 해제 관리자 이메일 저장
+    private String blacklistedBy;
+    private String unleashedBy;
 }

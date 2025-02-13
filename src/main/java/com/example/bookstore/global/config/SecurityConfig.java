@@ -23,24 +23,24 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/users/join", "/users/signup", "/users/login", "/users/check-email", "/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/users/mypage").hasAuthority("ROLE_USER")  // ✅ ROLE_USER 그대로 사용
-                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")  // ✅ ROLE_ADMIN 그대로 사용
+                        .requestMatchers("/users/mypage").hasAuthority("ROLE_USER")
+                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
-                        .loginPage("/users/login")  // 로그인 페이지
-                        .usernameParameter("email") // 로그인 시 이메일 사용
-                        .passwordParameter("password") // 비밀번호 설정
-                        .defaultSuccessUrl("/", true) // 로그인 성공 시 메인 페이지로 이동
-                        .failureUrl("/users/login?error=true") // 로그인 실패 시 이동
+                        .loginPage("/users/login")
+                        .usernameParameter("email")
+                        .passwordParameter("password")
+                        .defaultSuccessUrl("/", true)
+                        .failureUrl("/users/login?error=true")
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/users/logout")  // ✅ 로그아웃 URL 설정
-                        .logoutSuccessUrl("/")  // 로그아웃 후 메인 페이지로 이동
+                        .logoutUrl("/users/logout")
+                        .logoutSuccessUrl("/")
                         .permitAll()
                 )
-                .userDetailsService(userDetailsService); // 커스텀 UserDetailsService 설정
+                .userDetailsService(userDetailsService);
 
         return http.build();
     }

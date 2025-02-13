@@ -20,7 +20,7 @@ public class Blacklist {
     private Long blacklistSeq;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_seq")  // 'user_seq' 외래키 연결
+    @JoinColumn(name = "user_seq")
     private User user;
 
     @Column(nullable = false)
@@ -33,14 +33,13 @@ public class Blacklist {
     private LocalDateTime unleashedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "blacklisted_by")  // 'blacklisted_by' 외래키 연결
-    private User blacklistedBy;  // 타입을 String에서 User로 변경
+    @JoinColumn(name = "blacklisted_by")
+    private User blacklistedBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "unleashed_by")  // 'unleashed_by' 외래키 연결
-    private User unleashedBy;  // 타입을 String에서 User로 변경
+    @JoinColumn(name = "unleashed_by")
+    private User unleashedBy;
 
-    /** ✅ 블랙리스트 등록 시 `blacklistedAt` 자동 설정 */
     @PrePersist
     protected void onCreate() {
         this.blacklistedAt = LocalDateTime.now();

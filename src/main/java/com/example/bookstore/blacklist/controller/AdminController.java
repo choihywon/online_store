@@ -11,24 +11,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
-@Controller  // ✅ @RestController → @Controller 변경
+@Controller
 @RequestMapping("/admin/users")
 @RequiredArgsConstructor
 public class AdminController {
 
     private final UserService userService;
 
-    /** ✅ 유저 관리 페이지 */
     @GetMapping
     public String getAllUsers(Model model) {
         List<UserDto> users = userService.findAllUsers();
         model.addAttribute("users", users);
-        return "admin/user_list"; // ✅ user_list.html 반환
+        return "admin/user_list";
     }
 
     @GetMapping("/{email}")
     public String getUserDetail(@PathVariable String email, Model model) {
-        UserDto user = userService.findUserByEmail(email); // ✅ 올바른 메서드 호출
+        UserDto user = userService.findUserByEmail(email);
         model.addAttribute("user", user);
         return "admin/user_detail";
     }

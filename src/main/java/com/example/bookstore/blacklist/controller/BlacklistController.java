@@ -16,30 +16,30 @@ public class BlacklistController {
 
     private final BlacklistService blacklistService;
 
-    // 블랙리스트 목록 페이지 (GET 방식)
+
     @GetMapping
     public String showBlacklistList(Model model) {
-        // 블랙리스트 목록을 가져와서 모델에 추가
+
         model.addAttribute("blacklists", blacklistService.findAll());
-        return "blacklist/blacklist_list";  // blacklist_list.html로 매핑
+        return "blacklist/blacklist_list";
     }
 
-    // 블랙리스트 등록 페이지 (GET 방식)
+
     @GetMapping("/add")
     public String showAddBlacklistForm(@RequestParam("email") String email, Model model) {
-        model.addAttribute("userEmail", email);  // 이메일을 모델에 추가
-        return "blacklist/add_blacklist";  // add_blacklist.html로 매핑
+        model.addAttribute("userEmail", email);
+        return "blacklist/add_blacklist";
     }
 
-    // 블랙리스트 등록 처리 (POST 방식)
+
     @PostMapping
     public String addBlacklist(@RequestParam("email") String email, @RequestParam("reason") String reason) {
-        // AddBlacklistDto 객체 생성
+
         AddBlacklistDto addBlacklistDto = new AddBlacklistDto(email, reason);
 
-        // 블랙리스트 등록
-        blacklistService.save(addBlacklistDto);  // 하나의 객체로 전달
-        return "redirect:/admin/blacklist";  // 블랙리스트 목록으로 리다이렉트
+
+        blacklistService.save(addBlacklistDto);
+        return "redirect:/admin/blacklist";
     }
 
     @PostMapping("/delete")
