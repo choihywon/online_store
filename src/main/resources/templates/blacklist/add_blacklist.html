@@ -2,15 +2,23 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>블랙리스트 추가</title>
+    <title>블랙리스트 등록</title>
 </head>
 <body>
-<h1>사용자 블랙리스트 추가</h1>
-<form th:action="@{/admin/blacklist/add}" method="post">
-    <label>사용자 이메일: <input type="email" name="email" required></label><br>
-    <label>사유: <input type="text" name="reason" required></label><br>
-    <label>관리자 ID: <input type="number" name="adminUserSeq" required></label><br>
-    <button type="submit">블랙리스트 추가</button>
+<h1>블랙리스트 등록</h1>
+
+<!-- 블랙리스트 등록 폼 -->
+<form action="/admin/blacklist" method="post">
+    <label for="email">이메일:</label>
+    <!-- userEmail을 Thymeleaf 변수로 바인딩 -->
+    <input type="text" id="email" name="email" th:value="${userEmail}" readonly><br><br>
+
+    <label for="reason">사유:</label>
+    <textarea id="reason" name="reason" required></textarea><br><br>
+
+    <button type="submit">등록</button>
 </form>
+
+<button onclick="location.href='/admin/users'">유저 목록으로</button>
 </body>
 </html>

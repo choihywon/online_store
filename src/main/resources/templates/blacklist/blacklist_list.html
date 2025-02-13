@@ -1,3 +1,32 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="ko" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>블랙리스트 목록</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>블랙리스트 목록</h1>-->
+<!--<table>-->
+<!--    <thead>-->
+<!--    <tr>-->
+<!--        <th>이메일</th>-->
+<!--        <th>사유</th>-->
+<!--        <th>블랙리스트 등록일</th>-->
+<!--        <th>등록자</th>-->
+<!--    </tr>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--    <tr th:each="blacklist : ${blacklists}">-->
+<!--        <td th:text="${blacklist.email}"></td>  &lt;!&ndash; email 필드를 사용 &ndash;&gt;-->
+<!--        <td th:text="${blacklist.reason}"></td>-->
+<!--        <td th:text="${blacklist.blacklistedAt}"></td>-->
+<!--        <td th:text="${blacklist.blacklistedBy}"></td>-->
+<!--    </tr>-->
+<!--    </tbody>-->
+<!--</table>-->
+<!--<a href="/admin/blacklist/add?email=user@example.com">블랙리스트 추가</a>-->
+<!--</body>-->
+<!--</html>-->
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -6,15 +35,14 @@
 </head>
 <body>
 <h1>블랙리스트 목록</h1>
-<table border="1">
+<table>
     <thead>
     <tr>
         <th>이메일</th>
         <th>사유</th>
         <th>블랙리스트 등록일</th>
-        <th>등록 관리자</th>
-        <th>해제 관리자</th>
-        <th>삭제</th>
+        <th>등록자</th>
+        <th>해제</th>  <!-- 해제 버튼을 추가 -->
     </tr>
     </thead>
     <tbody>
@@ -22,17 +50,16 @@
         <td th:text="${blacklist.email}"></td>
         <td th:text="${blacklist.reason}"></td>
         <td th:text="${blacklist.blacklistedAt}"></td>
-        <td th:text="${blacklist.blacklistedBy != null ? blacklist.blacklistedBy : '없음'}"></td>
-        <td th:text="${blacklist.unleashedBy != null ? blacklist.unleashedBy : '없음'}"></td>
+        <td th:text="${blacklist.blacklistedBy}"></td>
         <td>
-            <form th:action="@{/admin/blacklist/delete/{blacklistSeq}(blacklistSeq=${blacklist.blacklistSeq})}" method="post">
-                <button type="submit">삭제</button>
+            <!-- 블랙리스트 해제 버튼 추가 -->
+            <form th:action="@{/admin/blacklist/unleash/{blacklistSeq}(blacklistSeq=${blacklist.blacklistSeq})}" method="post">
+                <button type="submit">해제</button>
             </form>
         </td>
     </tr>
     </tbody>
 </table>
-
-<button onclick="location.href='add_blacklist.html'">블랙리스트 추가</button>
+<a href="/admin/blacklist/add?email=user@example.com">블랙리스트 추가</a>
 </body>
 </html>

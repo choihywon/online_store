@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -19,23 +20,25 @@ public class Blacklist {
     private Long blacklistSeq;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_seq", nullable = false)
-    private User user; // ✅ 블랙리스트 대상 사용자
+    @JoinColumn(name = "user_seq")  // 'user_seq' 외래키 연결
+    private User user;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String reason;
 
-    @Column(name = "blacklisted_at", nullable = false, updatable = false)
+    @Column(name = "blacklisted_at", nullable = false)
     private LocalDateTime blacklistedAt;
 
     @Column(name = "unleashed_at")
     private LocalDateTime unleashedAt;
 
-    @Column(name = "blacklisted_by", nullable = false)
-    private String blacklistedBy; // ✅ 관리자 이메일 저장
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "blacklisted_by")  // 'blacklisted_by' 외래키 연결
+    private User blacklistedBy;  // 타입을 String에서 User로 변경
 
-    @Column(name = "unleashed_by")
-    private String unleashedBy; // ✅ 해제 관리자 이메일 저장
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "unleashed_by")  // 'unleashed_by' 외래키 연결
+    private User unleashedBy;  // 타입을 String에서 User로 변경
 
     /** ✅ 블랙리스트 등록 시 `blacklistedAt` 자동 설정 */
     @PrePersist
