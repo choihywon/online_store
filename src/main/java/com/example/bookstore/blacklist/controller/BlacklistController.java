@@ -41,4 +41,14 @@ public class BlacklistController {
         blacklistService.save(addBlacklistDto);  // 하나의 객체로 전달
         return "redirect:/admin/blacklist";  // 블랙리스트 목록으로 리다이렉트
     }
+
+    @PostMapping("/delete")
+    public String deleteBlacklist(@RequestParam("email") String email, Authentication authentication) {
+        if (authentication == null || authentication.getName() == null) {
+            return "redirect:/users/login";
+        }
+
+        blacklistService.unblacklistUser(email);
+        return "redirect:/admin/blacklist";
+    }
 }

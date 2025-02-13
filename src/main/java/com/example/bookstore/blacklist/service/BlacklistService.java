@@ -70,4 +70,36 @@ public class BlacklistService {
                 ))
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public void unblacklistUser(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
+
+        List<Blacklist> blacklists = blacklistRepository.findByUser(user);
+
+        if (blacklists.isEmpty()) {
+            throw new EntityNotFoundException("블랙리스트에 등록되지 않은 사용자입니다.");
+        }
+
+        // 현재 로그인한 관리자 가져오기
+        User admin = getLoggedInAdmin();
+
+        // 여러 개의 블랙리스트 항목을 순회하면서 모두 해제
+        for (Blacklist blacklist : blacklists) {
+            blacklist.unblacklist(admin);
+            blacklistRepository.delete(blacklist);
+        }
+
+        // 유저 활성화
+        user.activateUser();
+    }
+
+    /** ✅ 로그인한 관리자 정보 가져오기 */
+    private User getLoggedInAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String adminEmail = authentication.getName();
+        return userRepository.findByEmail(adminEmail)
+                .orElseThrow(() -> new EntityNotFoundException("관리자를 찾을 수 없습니다."));
+    }
 }

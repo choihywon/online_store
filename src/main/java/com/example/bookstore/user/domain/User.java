@@ -78,4 +78,9 @@ public class User {
         this.useYn = 'N';
         this.lastModifiedAt = LocalDateTime.now();
     }
+
+    public void activateUser() {
+        this.useYn = 'Y';
+        this.lastModifiedAt = LocalDateTime.now();
+    }
 }

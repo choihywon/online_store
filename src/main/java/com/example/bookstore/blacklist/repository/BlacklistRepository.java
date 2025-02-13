@@ -11,4 +11,5 @@ import java.util.Optional;
 @Repository
 public interface BlacklistRepository extends JpaRepository<Blacklist, Long> {
     Optional<Blacklist> findByUser_Email(String email);
+    List<Blacklist> findByUser(User user);
 }

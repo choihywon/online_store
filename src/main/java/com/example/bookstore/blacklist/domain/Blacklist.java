@@ -45,4 +45,9 @@ public class Blacklist {
     protected void onCreate() {
         this.blacklistedAt = LocalDateTime.now();
     }
+
+    public void unblacklist(User admin) {
+        this.unleashedBy = admin;
+        this.unleashedAt = LocalDateTime.now();
+    }
 }
