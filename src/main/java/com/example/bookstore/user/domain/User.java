@@ -69,7 +69,10 @@ public class User {
         this.nickname = nickname;
         this.lastModifiedAt = LocalDateTime.now();
     }
-
+    public void setUseYn(char useYn) {
+        this.useYn = useYn;
+        this.lastModifiedAt = LocalDateTime.now();
+    }
 
     public void deactivateUser() {
         this.useYn = 'N';

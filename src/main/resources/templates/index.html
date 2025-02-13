@@ -1,12 +1,36 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--  <title>Home</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>Welcome to Bookstore</h1>-->
+<!--<p><a href="/users/join">회원가입</a></p>-->
+<!--<p><a href="/users/login">로그인</a></p>-->
+<!--<p><a href="/users/mypage">마이페이지</a></p>-->
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+  <meta charset="UTF-8">
   <title>Home</title>
 </head>
 <body>
 <h1>Welcome to Bookstore</h1>
+
+<!-- 일반 사용자 메뉴 -->
 <p><a href="/users/join">회원가입</a></p>
 <p><a href="/users/login">로그인</a></p>
 <p><a href="/users/mypage">마이페이지</a></p>
+
+<!-- 관리자 로그인 시 추가 메뉴 -->
+<div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+  <h2>관리자 메뉴</h2>
+  <p><a href="/admin/users">유저 관리</a></p>
+  <p><a href="/admin/blacklist">블랙리스트 관리</a></p>
+</div>
+
 </body>
 </html>

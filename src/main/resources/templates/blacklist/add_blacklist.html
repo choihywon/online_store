@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>블랙리스트 추가</title>
+</head>
+<body>
+<h1>사용자 블랙리스트 추가</h1>
+<form th:action="@{/admin/blacklist/add}" method="post">
+    <label>사용자 이메일: <input type="email" name="email" required></label><br>
+    <label>사유: <input type="text" name="reason" required></label><br>
+    <label>관리자 ID: <input type="number" name="adminUserSeq" required></label><br>
+    <button type="submit">블랙리스트 추가</button>
+</form>
+</body>
+</html>

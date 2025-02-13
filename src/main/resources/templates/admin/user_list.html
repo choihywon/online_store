@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>유저 관리</title>
+</head>
+<body>
+<h1>유저 목록</h1>
+<table border="1">
+    <thead>
+    <tr>
+        <th>이메일</th>
+        <th>전화번호</th>
+        <th>닉네임</th>
+        <th>등급</th>
+        <th>마일리지</th>
+        <th>계정 상태</th>
+        <th>자세히</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+        <td th:text="${user.email}"></td> <!-- ✅ userSeq 대신 email 사용 가능 -->
+        <td th:text="${user.nickname}"></td>
+        <td th:text="${user.grade}"></td>
+        <td th:text="${user.mileage}"></td>
+        <td th:text="${user.useYn}"></td>
+        <td>
+            <a th:href="@{/admin/users/{email}(email=${user.email})}">상세보기</a>
+        </td>
+    </tr>
+
+    </tbody>
+</table>
+
+<button onclick="location.href='/'">홈으로</button>
+</body>
+</html>

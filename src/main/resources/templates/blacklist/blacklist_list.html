@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>블랙리스트 목록</title>
+</head>
+<body>
+<h1>블랙리스트 목록</h1>
+<table border="1">
+    <thead>
+    <tr>
+        <th>이메일</th>
+        <th>사유</th>
+        <th>블랙리스트 등록일</th>
+        <th>등록 관리자</th>
+        <th>해제 관리자</th>
+        <th>삭제</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="blacklist : ${blacklists}">
+        <td th:text="${blacklist.email}"></td>
+        <td th:text="${blacklist.reason}"></td>
+        <td th:text="${blacklist.blacklistedAt}"></td>
+        <td th:text="${blacklist.blacklistedBy != null ? blacklist.blacklistedBy : '없음'}"></td>
+        <td th:text="${blacklist.unleashedBy != null ? blacklist.unleashedBy : '없음'}"></td>
+        <td>
+            <form th:action="@{/admin/blacklist/delete/{blacklistSeq}(blacklistSeq=${blacklist.blacklistSeq})}" method="post">
+                <button type="submit">삭제</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<button onclick="location.href='add_blacklist.html'">블랙리스트 추가</button>
+</body>
+</html>

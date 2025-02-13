@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>블랙리스트 상세 조회</title>
+</head>
+<body>
+<h1>블랙리스트 상세 조회</h1>
+<label>이메일: <span th:text="${blacklist.email}"></span></label><br>
+<label>사유: <span th:text="${blacklist.reason}"></span></label><br>
+<label>블랙리스트 등록일: <span th:text="${blacklist.blacklistedAt}"></span></label><br>
+<label>등록 관리자: <span th:text="${blacklist.blacklistedBy != null ? blacklist.blacklistedBy : '없음'}"></span></label><br>
+<label>해제 관리자: <span th:text="${blacklist.unleashedBy != null ? blacklist.unleashedBy : '없음'}"></span></label><br>
+
+<button onclick="location.href='blacklist_list.html'">목록으로 돌아가기</button>
+</body>
+</html>

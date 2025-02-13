@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>유저 상세 정보</title>
+</head>
+<body>
+<h1>유저 상세 정보</h1>
+<p><strong>이메일:</strong> <span th:text="${user.email}"></span></p>
+<p><strong>전화번호:</strong> <span th:text="${user.phone}"></span></p>
+<p><strong>닉네임:</strong> <span th:text="${user.nickname}"></span></p>
+<p><strong>등급:</strong> <span th:text="${user.grade}"></span></p>
+<p><strong>마일리지:</strong> <span th:text="${user.mileage}"></span></p>
+<p>계정 상태 : <span th:text="${user.useYn}"></span></p>
+
+<button onclick="location.href='/admin/users'">유저 목록으로</button>
+</body>
+</html>
