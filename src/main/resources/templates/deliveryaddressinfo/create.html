@@ -4,6 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>배송지 추가</title>
+  <script>
+    function execDaumPostcode() {
+      new daum.Postcode({
+        oncomplete: function(data) {
+          // 사용자가 검색한 주소 결과를 streetAddr과 zipcode에 입력
+          document.getElementById('zipcode').value = data.zonecode;
+          document.getElementById('streetAddr').value = data.roadAddress;
+
+          // 포커스를 상세 주소 입력란으로 이동
+          document.getElementById('detailAddr').focus();
+        }
+      }).open();
+    }
+  </script>
 </head>
 <body>
 
@@ -12,23 +26,32 @@
 <form action="/users/deliveryaddressinfo" method="post">
   <label for="addressName">배송지 이름</label>
   <input type="text" id="addressName" name="addressName" required>
+  <br><br>
 
   <label for="zipcode">우편번호</label>
-  <input type="text" id="zipcode" name="zipcode" required>
+  <input type="text" id="zipcode" name="zipcode" required readonly>
+  <button type="button" onclick="execDaumPostcode()">주소 검색</button>
+  <br><br>
 
   <label for="streetAddr">도로명 주소</label>
-  <input type="text" id="streetAddr" name="streetAddr" required>
+  <input type="text" id="streetAddr" name="streetAddr" required readonly>
+  <br><br>
 
   <label for="detailAddr">상세 주소</label>
   <input type="text" id="detailAddr" name="detailAddr">
+  <br><br>
 
   <label for="etc">기타</label>
   <input type="text" id="etc" name="etc">
+  <br><br>
 
   <button type="submit">추가하기</button>
 </form>
 
 <a href="/users/deliveryaddressinfo">배송지 목록으로 돌아가기</a>
+
+<!-- ✅ 카카오 주소 검색 API 추가 -->
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
 </body>
 </html>
