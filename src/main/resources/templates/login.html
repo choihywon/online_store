@@ -9,9 +9,14 @@
 
 <h2>로그인</h2>
 
-<!-- 로그인 실패 시 메시지 표시 -->
+
 <div th:if="${param.error}">
-    <p> 로그인 실패: 이메일 또는 비밀번호가 잘못되었습니다.</p>
+    <p th:if="${session['SPRING_SECURITY_LAST_EXCEPTION'].message == '비활성화된 계정입니다. 관리자에게 문의하세요.'}" >
+        비활성화된 계정입니다. 관리자에게 문의하세요.
+    </p>
+    <p th:unless="${session['SPRING_SECURITY_LAST_EXCEPTION'].message == '비활성화된 계정입니다. 관리자에게 문의하세요.'}" >
+        이메일 또는 비밀번호가 잘못되었습니다.
+    </p>
 </div>
 
 <form action="/users/login" method="post">

@@ -1,16 +1,39 @@
+<!--&lt;!&ndash;<!DOCTYPE html>&ndash;&gt;-->
+<!--&lt;!&ndash;<html xmlns:th="http://www.thymeleaf.org">&ndash;&gt;-->
+<!--&lt;!&ndash;<head>&ndash;&gt;-->
+<!--&lt;!&ndash;  <title>Home</title>&ndash;&gt;-->
+<!--&lt;!&ndash;</head>&ndash;&gt;-->
+<!--&lt;!&ndash;<body>&ndash;&gt;-->
+<!--&lt;!&ndash;<h1>Welcome to Bookstore</h1>&ndash;&gt;-->
+<!--&lt;!&ndash;<p><a href="/users/join">회원가입</a></p>&ndash;&gt;-->
+<!--&lt;!&ndash;<p><a href="/users/login">로그인</a></p>&ndash;&gt;-->
+<!--&lt;!&ndash;<p><a href="/users/mypage">마이페이지</a></p>&ndash;&gt;-->
+<!--&lt;!&ndash;</body>&ndash;&gt;-->
+<!--&lt;!&ndash;</html>&ndash;&gt;-->
+
 <!--<!DOCTYPE html>-->
 <!--<html xmlns:th="http://www.thymeleaf.org">-->
 <!--<head>-->
+<!--  <meta charset="UTF-8">-->
 <!--  <title>Home</title>-->
 <!--</head>-->
 <!--<body>-->
 <!--<h1>Welcome to Bookstore</h1>-->
+
+<!--&lt;!&ndash; 일반 사용자 메뉴 &ndash;&gt;-->
 <!--<p><a href="/users/join">회원가입</a></p>-->
 <!--<p><a href="/users/login">로그인</a></p>-->
 <!--<p><a href="/users/mypage">마이페이지</a></p>-->
+
+<!--&lt;!&ndash; 관리자 로그인 시 추가 메뉴 &ndash;&gt;-->
+<!--<div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">-->
+<!--  <h2>관리자 메뉴</h2>-->
+<!--  <p><a href="/admin/users">유저 관리</a></p>-->
+<!--  <p><a href="/admin/blacklist">블랙리스트 관리</a></p>-->
+<!--</div>-->
+
 <!--</body>-->
 <!--</html>-->
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -20,12 +43,21 @@
 <body>
 <h1>Welcome to Bookstore</h1>
 
-<!-- 일반 사용자 메뉴 -->
-<p><a href="/users/join">회원가입</a></p>
-<p><a href="/users/login">로그인</a></p>
-<p><a href="/users/mypage">마이페이지</a></p>
+<!-- 🚀 로그인하지 않은 사용자 (비로그인 상태) -->
+<div th:if="${#authorization.expression('isAnonymous()')}">
+  <p><a href="/users/join">회원가입</a></p>
+  <p><a href="/users/login">로그인</a></p>
+</div>
 
-<!-- 관리자 로그인 시 추가 메뉴 -->
+
+<div th:if="${#authorization.expression('isAuthenticated()')}">
+  <p><a href="/users/mypage">마이페이지</a></p>
+  <form action="/logout" method="post">
+    <button type="submit">로그아웃</button>
+  </form>
+</div>
+
+
 <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
   <h2>관리자 메뉴</h2>
   <p><a href="/admin/users">유저 관리</a></p>
