@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>책 수정</title>
+</head>
+<body>
+<h2>📚 책 수정</h2>
+<form action="/admin/inventory/edit" method="post">
+  <input type="hidden" name="inventoryId" th:value="${book.inventoryId}">
+  제목: <span th:text="${book.title}"></span><br>
+  ISBN: <span th:text="${book.isbn}"></span><br>
+  출판사: <span th:text="${book.publisher}"></span><br>
+  수량: <input type="number" name="quantity" th:value="${book.quantity}"><br>
+  상태:
+  <select name="status">
+    <option value="ON_SALES">판매 중</option>
+    <option value="OOS">품절</option>
+    <option value="OOP">절판</option>
+  </select><br>
+  <button type="submit">수정</button>
+</form>
+</body>
+</html>

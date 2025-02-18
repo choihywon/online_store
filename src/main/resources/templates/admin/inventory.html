@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>등록된 책 목록</title>
+</head>
+<body>
+<h2>📚 등록된 책 목록</h2>
+<table border="1">
+    <tr>
+        <th>제목</th>
+        <th>ISBN</th>
+        <th>출판사</th>
+        <th>가격</th>
+        <th>상태</th>
+        <th>수량</th>
+        <th>수정</th>
+    </tr>
+    <tr th:each="book : ${books}">
+        <td th:text="${book.title}"></td>
+        <td th:text="${book.isbn}"></td>
+        <td th:text="${book.publisher}"></td>
+        <td th:text="${book.salePrice}"></td>
+        <td th:text="${book.status}"></td>
+        <td th:text="${book.quantity}"></td>
+        <td><a th:href="@{/admin/inventory/editForm(id=${book.inventoryId})}">수정</a></td>
+    </tr>
+</table>
+</body>
+</html>

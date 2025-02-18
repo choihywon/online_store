@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>책 상세 정보</title>
+</head>
+<body>
+<h2>📖 책 상세 정보</h2>
+
+<img th:src="${thumbnail}" width="120"><br>
+<strong th:text="${title}"></strong> (<span th:text="${isbn}"></span>)<br>
+저자: <span th:text="${authors}"></span><br>
+번역자: <span th:text="${translators}"></span><br>
+출판사: <span th:text="${publisher}"></span><br>
+출판일: <span th:text="${datetime}"></span><br>
+가격: <span th:text="${price}"></span>원<br>
+판매가: <span th:text="${salePrice}"></span>원<br>
+상태: <span th:text="${status}"></span><br>
+설명: <span th:text="${contents}"></span><br>
+<a th:href="${url}" target="_blank">📖 원본 페이지</a><br>
+<p>확인용 ISBN 값: <span th:text="${isbn}"></span></p>
+<!-- 📌 책 등록 폼 -->
+<h3>📌 수량 등록</h3>
+<form action="/admin/inventory/add" method="post">
+  <input type="hidden" name="title" th:value="${title}">
+  <input type="hidden" name="isbn" th:value="${isbn}">
+  <input type="hidden" name="authors" th:value="${authors}">
+  <input type="hidden" name="translators" th:value="${translators != null ? translators : '없음'}">
+  <input type="hidden" name="publisher" th:value="${publisher}">
+  <input type="hidden" name="datetime"
+         th:value="${datetime != null ? #temporals.format(datetime, 'yyyy-MM-dd''T''HH:mm:ss') : '2000-01-01T00:00:00'}">
+  <input type="hidden" name="price" th:value="${price}">
+  <input type="hidden" name="salePrice" th:value="${salePrice}">
+  <input type="hidden" name="thumbnail" th:value="${thumbnail}">
+  <input type="hidden" name="url" th:value="${url != null ? url : ''}">
+  <input type="hidden" name="contents" th:value="${contents != null ? contents : '책 설명이 없습니다.'}">
+
+  <label>수량: <input type="number" name="quantity" min="1" required></label><br>
+  <button type="submit">등록</button>
+</form>
+
+
+
+<a href="/admin/inventory/search">🔙 검색으로 돌아가기</a>
+</body>
+</html>

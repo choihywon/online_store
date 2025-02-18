@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>📚 책 검색</title>
+    <script>
+        function searchBooks() {
+            let query = document.getElementById('query').value.trim();
+            if (!query) return;
+
+            fetch(`/admin/inventory/search/api?query=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    let resultsDiv = document.getElementById('results');
+                    resultsDiv.innerHTML = "";
+
+                    data.documents.forEach(book => {
+                        let isbn = book.isbn && book.isbn.length > 0 ? book.isbn[0].trim() : "정보 없음";
+                        let authors = book.authors && book.authors.length > 0
+                            ? book.authors.map(a => a.trim()).join(", ")
+                            : "정보 없음";
+                        let translators = book.translators && book.translators.length > 0
+                            ? book.translators.map(t => t.trim()).join(", ")
+                            : "정보 없음";
+                        let publisher = book.publisher ? book.publisher.trim() : "정보 없음";
+                        let price = book.price ? book.price.toString().trim() : "0";
+                        let salePrice = book.sale_price ? book.sale_price.toString().trim() : "0";
+                        let thumbnail = book.thumbnail ? book.thumbnail.trim() : "https://via.placeholder.com/80";
+
+                        let bookDiv = document.createElement("div");
+                        bookDiv.innerHTML = `
+                            <div style="border:1px solid #ddd; padding:10px; margin:10px; display:flex;">
+                                <img src="${thumbnail}" width="80">
+                                <div style="margin-left: 10px;">
+                                    <h3>${book.title.trim()}</h3>
+                                    <p>저자: ${authors}</p>
+                                    <p>출판사: ${publisher}</p>
+                                    <a href="/admin/inventory/add?title=${encodeURIComponent(book.title.trim())}
+                                        &isbn=${encodeURIComponent(isbn)}
+                                        &publisher=${encodeURIComponent(publisher)}
+                                        &authors=${encodeURIComponent(authors)}
+                                        &translators=${encodeURIComponent(translators)}
+                                        &price=${encodeURIComponent(price)}
+                                        &salePrice=${encodeURIComponent(salePrice)}
+                                        &thumbnail=${encodeURIComponent(thumbnail)}">
+                                        📌 이 책 등록하기
+                                    </a>
+                                </div>
+                            </div>
+                        `;
+                        resultsDiv.appendChild(bookDiv);
+                    });
+                })
+                .catch(error => {
+                    console.error("오류 발생:", error);
+                    alert("책 정보를 불러오는 중 오류가 발생했습니다.");
+                });
+        }
+    </script>
+</head>
+<body>
+<h2>📚 책 검색</h2>
+<input type="text" id="query" placeholder="책 제목 입력">
+<button onclick="searchBooks()">검색</button>
+<h3>검색 결과</h3>
+<div id="results"></div>
+<a href="/admin">🔙 관리자 홈</a>
+</body>
+</html>

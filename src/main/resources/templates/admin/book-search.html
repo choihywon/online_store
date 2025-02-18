@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>책 검색 결과</title>
+</head>
+<body>
+<h2>📚 책 검색</h2>
+<form action="/admin/inventory/search" method="get">
+    <input type="text" name="query" placeholder="책 제목 입력" th:value="${query}">
+    <button type="submit">검색</button>
+</form>
+
+<h3>🔍 검색 결과</h3>
+<div th:if="${books}">
+    <div th:each="book : ${books}">
+        <div>
+            <img th:src="${book['thumbnail']}" width="100"><br>
+            <strong th:text="${book['title']}"></strong> (<span th:text="${book['isbn']}"></span>)<br>
+            저자: <span th:text="${#strings.arrayJoin(book['authors'], ', ')}"></span><br>
+            번역자: <span th:text="${#strings.arrayJoin(book['translators'], ', ')}"></span><br>
+            출판사: <span th:text="${book['publisher']}"></span><br>
+            출판일: <span th:text="${book['datetime']}"></span><br>
+            가격: <span th:text="${book['price']}"></span>원<br>
+            판매가: <span th:text="${book['sale_price']}"></span>원<br>
+            상태: <span th:text="${book['status']}"></span><br>
+            설명: <span th:text="${book['contents']}"></span><br>
+
+            <!-- 📌 상세 페이지 이동 링크 -->
+            <!-- 상세 페이지 이동 링크 -->
+            <a th:href="@{/admin/inventory/detail(
+                title=${book['title']},
+                isbn=${book['isbn'] != null ? book['isbn'] : 'DEBUG_ISBN_NULL'},
+                authors=${#strings.arrayJoin(book['authors'], ', ')},
+                translators=${book['translators'] != null ? #strings.arrayJoin(book['translators'], ', ') : '없음'},
+                publisher=${book['publisher']},
+                datetime=${book['datetime'] != null ? book['datetime'] : '2000-01-01T00:00:00'},
+                price=${book['price']},
+                salePrice=${book['sale_price']},
+                thumbnail=${book['thumbnail']},
+                url=${book['url'] != null ? book['url'] : ''},
+                status=${book['status']},
+                contents=${book['contents'] != null ? book['contents'] : '책 설명이 없습니다.'}
+            )}">📖 상세 페이지</a>
+
+        </div>
+        <hr>
+    </div>
+</div>
+
+<div th:if="${books}">
+    <a th:if="${page > 1}" th:href="@{/admin/inventory/search(query=${query}, page=${page - 1})}">이전</a>
+    <a th:if="${!isEnd}" th:href="@{/admin/inventory/search(query=${query}, page=${page + 1})}">다음</a>
+</div>
+</body>
+</html>
