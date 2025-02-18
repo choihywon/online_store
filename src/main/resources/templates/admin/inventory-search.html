@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>📚 책 검색</title>
+    <title>책 검색</title>
     <script>
         function searchBooks() {
             let query = document.getElementById('query').value.trim();
@@ -43,7 +43,7 @@
                                         &price=${encodeURIComponent(price)}
                                         &salePrice=${encodeURIComponent(salePrice)}
                                         &thumbnail=${encodeURIComponent(thumbnail)}">
-                                        📌 이 책 등록하기
+                                        이 책 등록하기
                                     </a>
                                 </div>
                             </div>
@@ -53,17 +53,17 @@
                 })
                 .catch(error => {
                     console.error("오류 발생:", error);
-                    alert("책 정보를 불러오는 중 오류가 발생했습니다.");
+                    alert("책 정보를 불러오는 중 오류 발생");
                 });
         }
     </script>
 </head>
 <body>
-<h2>📚 책 검색</h2>
+<h2>책 검색</h2>
 <input type="text" id="query" placeholder="책 제목 입력">
 <button onclick="searchBooks()">검색</button>
 <h3>검색 결과</h3>
 <div id="results"></div>
-<a href="/admin">🔙 관리자 홈</a>
+<a href="/admin">관리자 홈</a>
 </body>
 </html>

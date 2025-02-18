@@ -1,24 +1,35 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>책 수정</title>
 </head>
 <body>
-<h2>📚 책 수정</h2>
+<h2>책 수정</h2>
+
 <form action="/admin/inventory/edit" method="post">
+
   <input type="hidden" name="inventoryId" th:value="${book.inventoryId}">
-  제목: <span th:text="${book.title}"></span><br>
-  ISBN: <span th:text="${book.isbn}"></span><br>
-  출판사: <span th:text="${book.publisher}"></span><br>
-  수량: <input type="number" name="quantity" th:value="${book.quantity}"><br>
-  상태:
-  <select name="status">
-    <option value="ON_SALES">판매 중</option>
-    <option value="OOS">품절</option>
-    <option value="OOP">절판</option>
-  </select><br>
+
+  <label>제목: <input type="text" name="title" th:value="${book.title}" readonly></label><br>
+  <label>ISBN: <input type="text" name="isbn" th:value="${book.isbn}" readonly></label><br>
+  <label>저자: <input type="text" name="authors" th:value="${#strings.arrayJoin(book.authors, ', ')}" readonly></label><br>
+  <label>출판사: <input type="text" name="publisher" th:value="${book.publisher}" readonly></label><br>
+  <label>판매가: <input type="number" name="salePrice" th:value="${book.salePrice}"></label><br>
+  <label>수량: <input type="number" name="quantity" th:value="${book.quantity}" required></label><br>
+
+  <label>상태:
+    <select name="status">
+      <option value="ON_SALES" th:selected="${book.status == 'ON_SALES'}">판매중</option>
+      <option value="OOS" th:selected="${book.status == 'OOS'}">품절</option>
+      <option value="OOP" th:selected="${book.status == 'OOP'}">절판</option>
+    </select>
+  </label><br>
+
   <button type="submit">수정</button>
 </form>
+
+<a href="/admin/inventory">📚 목록으로 돌아가기</a>
+
 </body>
 </html>

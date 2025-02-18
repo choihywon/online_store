@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>책 상세 정보</title>
+</head>
+<body>
+<h2>책 상세 정보</h2>
+
+<!-- 책 기본 정보 -->
+<img th:src="${book.thumbnail}" width="120"><br>
+<strong th:text="${book.title}"></strong> (<span th:text="${book.isbn}"></span>)<br>
+저자: <span th:text="${book.authors}"></span><br>
+번역자: <span th:text="${book.translators}"></span><br>
+출판사: <span th:text="${book.publisher}"></span><br>
+출판일: <span th:text="${book.datetime}"></span><br>
+가격: <span th:text="${book.price}"></span>원<br>
+판매가: <span th:text="${book.salePrice}"></span>원<br>
+상태: <span th:text="${book.status}"></span><br>
+설명: <span th:text="${book.contents}"></span><br>
+<a th:href="${book.url}" target="_blank">원본 페이지</a><br>
+
+
+<p>ISBN 확인: <span th:text="${book.isbn}"></span></p>
+
+
+<hr>
+
+
+<a href="/admin/inventory">목록으로 돌아가기</a>
+
+</body>
+</html>

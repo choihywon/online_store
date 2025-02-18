@@ -5,9 +5,9 @@
     <title>책 검색</title>
 </head>
 <body>
-<h1>📚 책 검색</h1>
+<h1>책 검색</h1>
 
-<!-- 🔍 검색 폼 -->
+<!-- 검색 폼 -->
 <form action="/admin/inventory/search" method="get">
     <input type="text" name="title" placeholder="책 제목을 입력하세요">
     <button type="submit">검색</button>
@@ -15,7 +15,7 @@
 
 <hr>
 
-<!-- 📌 검색 결과 리스트 -->
+
 <div th:if="${books}">
     <h2>검색 결과</h2>
     <ul>

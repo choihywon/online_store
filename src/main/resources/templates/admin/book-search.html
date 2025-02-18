@@ -5,13 +5,13 @@
     <title>책 검색 결과</title>
 </head>
 <body>
-<h2>📚 책 검색</h2>
+<h2>책 검색</h2>
 <form action="/admin/inventory/search" method="get">
     <input type="text" name="query" placeholder="책 제목 입력" th:value="${query}">
     <button type="submit">검색</button>
 </form>
 
-<h3>🔍 검색 결과</h3>
+<h3>검색 결과</h3>
 <div th:if="${books}">
     <div th:each="book : ${books}">
         <div>
@@ -26,8 +26,7 @@
             상태: <span th:text="${book['status']}"></span><br>
             설명: <span th:text="${book['contents']}"></span><br>
 
-            <!-- 📌 상세 페이지 이동 링크 -->
-            <!-- 상세 페이지 이동 링크 -->
+
             <a th:href="@{/admin/inventory/detail(
                 title=${book['title']},
                 isbn=${book['isbn'] != null ? book['isbn'] : 'DEBUG_ISBN_NULL'},
@@ -41,7 +40,7 @@
                 url=${book['url'] != null ? book['url'] : ''},
                 status=${book['status']},
                 contents=${book['contents'] != null ? book['contents'] : '책 설명이 없습니다.'}
-            )}">📖 상세 페이지</a>
+            )}">상세 페이지</a>
 
         </div>
         <hr>

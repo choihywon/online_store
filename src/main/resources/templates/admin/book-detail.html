@@ -5,7 +5,7 @@
   <title>책 상세 정보</title>
 </head>
 <body>
-<h2>📖 책 상세 정보</h2>
+<h2> 책 상세 정보</h2>
 
 <img th:src="${thumbnail}" width="120"><br>
 <strong th:text="${title}"></strong> (<span th:text="${isbn}"></span>)<br>
@@ -17,10 +17,10 @@
 판매가: <span th:text="${salePrice}"></span>원<br>
 상태: <span th:text="${status}"></span><br>
 설명: <span th:text="${contents}"></span><br>
-<a th:href="${url}" target="_blank">📖 원본 페이지</a><br>
+<a th:href="${url}" target="_blank">원본 페이지</a><br>
 <p>확인용 ISBN 값: <span th:text="${isbn}"></span></p>
-<!-- 📌 책 등록 폼 -->
-<h3>📌 수량 등록</h3>
+
+<h3>수량 등록</h3>
 <form action="/admin/inventory/add" method="post">
   <input type="hidden" name="title" th:value="${title}">
   <input type="hidden" name="isbn" th:value="${isbn}">
@@ -41,6 +41,6 @@
 
 
 
-<a href="/admin/inventory/search">🔙 검색으로 돌아가기</a>
+<a href="/admin/inventory/search">검색으로 돌아가기</a>
 </body>
 </html>

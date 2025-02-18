@@ -30,7 +30,7 @@ public class KakaoBookClient {
     private String kakaoApiUrl;
 
     public Map<String, Object> searchBooks(String query, int page) {
-        // ✅ API URL 구성 (페이지네이션 추가)
+
         String url = UriComponentsBuilder.fromHttpUrl(kakaoApiUrl)
                 .queryParam("query", query)
                 .queryParam("size", 10)

@@ -12,33 +12,33 @@ public class Inventory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long inventoryId; // 판매 도서 고유 ID
+    private Long inventoryId;
 
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = true) // ✅ NULL 허용
+    @Column(nullable = true)
     private String contents;
 
     @Column(nullable = false)
     private String isbn;
 
-    @Column(nullable = true) // ✅ NULL 허용
-    private LocalDateTime datetime; // 출판일
+    @Column(nullable = true)
+    private LocalDateTime datetime;
 
-    @Column(nullable = true) // ✅ NULL 허용
+    @Column(nullable = true)
     private String authors;
 
     @Column(nullable = false)
     private String publisher;
 
-    @Column(nullable = true) // ✅ NULL 허용
+    @Column(nullable = true)
     private String translators;
 
     @Column(nullable = false)
     private int price;
 
-    @Column(nullable = true) // ✅ NULL 허용
+    @Column(nullable = true)
     private Integer salePrice;
 
     @Column(nullable = false)
@@ -63,7 +63,7 @@ public class Inventory {
     @Column(nullable = false)
     private String lastModifiedBy;
 
-    @Column(nullable = true) // ✅ NULL 허용
+    @Column(nullable = true)
     private String url;
 
     @Builder
@@ -84,19 +84,19 @@ public class Inventory {
         this.thumbnail = thumbnail;
         this.quantity = quantity;
         this.status = status;
-        this.createdAt = (createdAt != null) ? createdAt : LocalDateTime.now(); // ✅ Builder에서도 설정 가능하도록 변경
-        this.lastModifiedAt = (lastModifiedAt != null) ? lastModifiedAt : LocalDateTime.now(); // ✅ Builder에서도 설정 가능하도록 변경
+        this.createdAt = (createdAt != null) ? createdAt : LocalDateTime.now();
+        this.lastModifiedAt = (lastModifiedAt != null) ? lastModifiedAt : LocalDateTime.now();
         this.createdBy = createdBy;
         this.lastModifiedBy = lastModifiedBy;
     }
 
-    // 📌 수량 업데이트 메서드
+
     public void updateQuantity(int quantity) {
         this.quantity = quantity;
         this.lastModifiedAt = LocalDateTime.now();
     }
 
-    // 📌 상태 업데이트 메서드
+
     public void updateStatus(InventoryStatus status) {
         this.status = status;
         this.lastModifiedAt = LocalDateTime.now();

@@ -1,5 +1,6 @@
 package com.example.bookstore.inventory.controller;
 
+import com.example.bookstore.inventory.domain.Inventory;
 import com.example.bookstore.inventory.dto.AddInventoryDto;
 import com.example.bookstore.inventory.dto.InventoryForAdminDto;
 import com.example.bookstore.inventory.dto.UpdateInventoryDto;
@@ -20,13 +21,13 @@ import java.util.Map;
 public class AdminInventoryController {
     private final AdminInventoryService adminInventoryService;
 
-    /** 📌 1. 책 검색 페이지 */
+
     @GetMapping("/search-page")
     public String searchBookPage() {
         return "admin/book-search";
     }
 
-    /** 📌 2. 카카오 API에서 책 검색 */
+
     @GetMapping("/search")
     public String searchBooks(@RequestParam(required = false) String query,
                               @RequestParam(defaultValue = "1") int page,
@@ -40,7 +41,7 @@ public class AdminInventoryController {
         return "admin/book-search";
     }
 
-    /** 📌 3. 책 상세 페이지 */
+
     @GetMapping("/detail")
     public String bookDetail(@RequestParam String title,
                              @RequestParam String isbn,
@@ -55,16 +56,16 @@ public class AdminInventoryController {
                              @RequestParam String status,
                              @RequestParam(required = false, defaultValue = "책 설명이 없습니다.") String contents,
                              Model model) {
-        System.out.println("✅ 상세 페이지 - 전달받은 ISBN: " + isbn);
-        System.out.println("✅ 상세 페이지 - 전달받은 datetime: " + datetime);
+        System.out.println("상세 페이지 - ISBN: " + isbn);
+        System.out.println("상세 페이지 -  datetime: " + datetime);
 
-        // ✅ datetime이 null이 아니면 LocalDateTime으로 변환
+
         LocalDateTime parsedDatetime = null;
         if (datetime != null && !datetime.isEmpty()) {
             try {
                 parsedDatetime = LocalDateTime.parse(datetime, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
             } catch (Exception e) {
-                System.out.println("🚨 datetime 변환 오류: " + e.getMessage());
+                System.out.println("datetime 오류: " + e.getMessage());
             }
         }
 
@@ -83,7 +84,7 @@ public class AdminInventoryController {
         return "admin/book-detail";
     }
 
-    /** 📌 4. 책 등록 */
+
     @PostMapping("/add")
     public String addBook(@ModelAttribute AddInventoryDto dto) {
         System.out.println("add isbn" + dto.getIsbn());
@@ -92,7 +93,7 @@ public class AdminInventoryController {
         return "redirect:/admin/inventory";
     }
 
-    /** 📌 5. 등록된 책 목록 조회 */
+
     @GetMapping
     public String findAllBooks(Model model) {
         List<InventoryForAdminDto> books = adminInventoryService.findAll();
@@ -100,7 +101,7 @@ public class AdminInventoryController {
         return "admin/inventory";
     }
 
-    /** 📌 6. 책 수정 페이지 */
+
     @GetMapping("/editForm")
     public String editBookForm(@RequestParam Long id, Model model) {
         InventoryForAdminDto book = adminInventoryService.findById(id);
@@ -108,18 +109,29 @@ public class AdminInventoryController {
         return "admin/book-edit";
     }
 
-    /** 📌 7. 책 수정 */
+
+
     @PostMapping("/edit")
-    public String updateBook(@ModelAttribute UpdateInventoryDto dto) {
+    public String update(@ModelAttribute UpdateInventoryDto dto) {
+        System.out.println("수정 요청 ID: " + dto.getInventoryId());
+        System.out.println("수정할 수량: " + dto.getQuantity());
+        System.out.println("수정할 상태: " + dto.getStatus());
+
         adminInventoryService.update(dto);
         return "redirect:/admin/inventory/" + dto.getInventoryId();
     }
 
-    /** 📌 8. 책 상세 조회 */
+
+
     @GetMapping("/{id}")
     public String findBookById(@PathVariable Long id, Model model) {
-        InventoryForAdminDto book = adminInventoryService.findById(id);
+        System.out.println("Controller - 전달받은 ID: " + id);
+
+        Inventory book = adminInventoryService.findInventoryByInventoryId(id);
         model.addAttribute("book", book);
+
         return "admin/inventory-detail";
     }
+
+
 }
