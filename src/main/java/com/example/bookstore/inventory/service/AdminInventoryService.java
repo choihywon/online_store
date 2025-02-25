@@ -62,6 +62,7 @@ public class AdminInventoryService {
                 .contents(contents)
                 .datetime(dto.getDatetime())
                 .status(InventoryStatus.ON_SALES)
+                .url(dto.getUrl())
                 .createdAt(LocalDateTime.now())
                 .lastModifiedAt(LocalDateTime.now())
                 .createdBy(adminName)
@@ -123,6 +124,7 @@ public class AdminInventoryService {
                         book.getTranslators().split(",")
                 )).collect(Collectors.toList());
     }
+
 
 
     @Transactional(readOnly = true)

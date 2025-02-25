@@ -29,6 +29,26 @@
   <p><a href="/admin/inventory/search-page">책 검색 및 등록</a></p>
   <p><a href="/admin/inventory">등록된 책 목록 조회</a></p>
 </div>
+<!-- 📌 등록된 책 목록 -->
+<h2>📚 판매 중인 책 목록</h2>
+<table border="1">
+  <tr>
+    <th>책 제목</th>
+    <th>ISBN</th>
+    <th>저자</th>
+    <th>출판사</th>
+    <th>가격</th>
+    <th>썸네일</th>
+  </tr>
+  <tr th:each="book : ${books}">
+    <td th:text="${book.title}"></td>
+    <td th:text="${book.isbn}"></td>
+    <td th:text="${#strings.arrayJoin(book.authors, ', ')}"></td>
+    <td th:text="${book.publisher}"></td>
+    <td th:text="${book.salePrice} + '원'"></td>
+    <td><img th:src="${book.thumbnail}" width="100"></td>
+  </tr>
+</table>
 
 </body>
 </html>
