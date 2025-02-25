@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/inventory")
@@ -25,7 +24,7 @@ public class AdminInventoryController {
     @GetMapping("/search-page")
     public String searchBookPage() {
 
-        return "admin/book-search";
+        return "admin/inventory/search";
     }
 
 
@@ -39,7 +38,7 @@ public class AdminInventoryController {
             model.addAttribute("page", page);
             model.addAttribute("isEnd", adminInventoryService.searchBooks(query, page).get("isEnd"));
         }
-        return "admin/book-search";
+        return "admin/inventory/search";
     }
 
 
@@ -82,7 +81,7 @@ public class AdminInventoryController {
         model.addAttribute("url", url);
         model.addAttribute("status", status);
         model.addAttribute("contents", contents);
-        return "admin/book-detail";
+        return "admin/inventory/detail";
     }
 
 
@@ -99,7 +98,7 @@ public class AdminInventoryController {
     public String findAllBooks(Model model) {
         List<InventoryForAdminDto> books = adminInventoryService.findAll();
         model.addAttribute("books", books);
-        return "admin/inventory";
+        return "admin/inventory/inventory";
     }
 
 
@@ -107,7 +106,7 @@ public class AdminInventoryController {
     public String editBookForm(@RequestParam Long id, Model model) {
         InventoryForAdminDto book = adminInventoryService.findById(id);
         model.addAttribute("book", book);
-        return "admin/book-edit";
+        return "admin/inventory/book-edit";
     }
 
 
@@ -119,7 +118,7 @@ public class AdminInventoryController {
         System.out.println("수정할 상태: " + dto.getStatus());
 
         adminInventoryService.update(dto);
-        return "redirect:/admin/inventory/" + dto.getInventoryId();
+        return "redirect:/admin/inventory";
     }
 
 
@@ -131,7 +130,7 @@ public class AdminInventoryController {
         Inventory book = adminInventoryService.findInventoryByInventoryId(id);
         model.addAttribute("book", book);
 
-        return "admin/inventory-detail";
+        return "admin/inventory/inventory-detail";
     }
 
 
