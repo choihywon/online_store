@@ -7,13 +7,13 @@
 <body>
 <h1>Welcome to Bookstore</h1>
 
-<!-- 🚀 로그인하지 않은 사용자 (비로그인 상태) -->
+
 <div th:if="${#authorization.expression('isAnonymous()')}">
   <p><a href="/users/join">회원가입</a></p>
   <p><a href="/users/login">로그인</a></p>
 </div>
 
-<!-- 🚀 로그인한 사용자 (비회원 아님) -->
+
 <div th:if="${#authorization.expression('isAuthenticated()')}">
   <p><a href="/users/mypage">마이페이지</a></p>
   <form action="/logout" method="post">
@@ -21,7 +21,7 @@
   </form>
 </div>
 
-<!-- 🚀 관리자 메뉴 (ROLE_ADMIN 권한) -->
+
 <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
   <h2>관리자 메뉴</h2>
   <p><a href="/admin/users">유저 관리</a></p>

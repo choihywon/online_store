@@ -24,6 +24,7 @@ public class AdminInventoryController {
 
     @GetMapping("/search-page")
     public String searchBookPage() {
+
         return "admin/book-search";
     }
 

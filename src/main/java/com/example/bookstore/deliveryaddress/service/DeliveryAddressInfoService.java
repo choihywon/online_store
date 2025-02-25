@@ -23,7 +23,7 @@ public class DeliveryAddressInfoService {
     @Transactional(readOnly = true)
     public List<DeliveryAddressInfoDto> findByUserEmail(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalStateException("findByUserEmail 쪽 사용자를 찾을 수 없다"));
 
         return deliveryAddressInfoRepository.findByUser(user).stream()
                 .map(info -> new DeliveryAddressInfoDto(
@@ -40,8 +40,8 @@ public class DeliveryAddressInfoService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalStateException("사용자를 찾을 수 없습니다. (email: " + email + ")"));
 
-        System.out.println("찾는 사용자: " + user.getEmail());
-        System.out.println(" 찾는 배송지 이름: " + addressName);
+        System.out.println("findByUserEmailAndAddressName 찾는 사용자: " + user.getEmail());
+        System.out.println(" findByUserEmailAndAddressName 찾는 배송지 이름: " + addressName);
 
         Optional<DeliveryAddressInfo> deliveryAddressOpt = deliveryAddressInfoRepository.findByUserAndAddressName(user, addressName);
 
@@ -82,7 +82,7 @@ public class DeliveryAddressInfoService {
 
             Optional<DeliveryAddressInfo> existingAddress = deliveryAddressInfoRepository.findByUserAndAddressName(user, dto.getAddressName());
             if (existingAddress.isPresent()) {
-                System.out.println("이미 존재하는 배송지 이름: " + dto.getAddressName());
+                System.out.println("save 쪽 이미 존재하는 배송지 이름: " + dto.getAddressName());
             } else {
 
                 DeliveryAddressInfo deliveryAddress = DeliveryAddressInfo.builder()
@@ -101,7 +101,7 @@ public class DeliveryAddressInfoService {
                 System.out.println("배송지 저장 완료");
             }
         } else {
-            System.out.println("사용자를 찾을 수 없습니다. 이메일: " + email);
+            System.out.println("save 쪽 이메일: " + email);
         }
     }
 
@@ -113,7 +113,7 @@ public class DeliveryAddressInfoService {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            System.out.println("사용자 찾음: " + user.getEmail());
+            System.out.println("updateByEmailAddressName 사용자 찾음: " + user.getEmail());
 
             String cleanedOriginalAddressName = originalAddressName.trim();
             String cleanedNewAddressName = dto.getAddressName().trim();
@@ -121,11 +121,11 @@ public class DeliveryAddressInfoService {
             Optional<DeliveryAddressInfo> optionalDeliveryAddress = deliveryAddressInfoRepository.findByUserAndAddressName(user, cleanedOriginalAddressName);
             if (optionalDeliveryAddress.isPresent()) {
                 DeliveryAddressInfo deliveryAddress = optionalDeliveryAddress.get();
-                System.out.println("기존 배송지 찾음: " + cleanedOriginalAddressName);
+                System.out.println("updateByEmailAddressName 기존 배송지 찾음: " + cleanedOriginalAddressName);
 
                 Optional<DeliveryAddressInfo> duplicateAddress = deliveryAddressInfoRepository.findByUserAndAddressName(user, cleanedNewAddressName);
                 if (duplicateAddress.isPresent() && !cleanedOriginalAddressName.equals(cleanedNewAddressName)) {
-                    System.out.println("이미 존재하는 배송지 이름: " + cleanedNewAddressName);
+                    System.out.println("updateByEmailAddressName 이미 존재하는 배송지 이름: " + cleanedNewAddressName);
                 } else {
                     deliveryAddress.updateDeliveryAddress(
                             cleanedNewAddressName,
@@ -137,10 +137,10 @@ public class DeliveryAddressInfoService {
                     System.out.println("배송지 정보 업데이트 완료");
                 }
             } else {
-                System.out.println("이 배송지를 찾을 수 없습니다. 다시 시도해 주세요.");
+                System.out.println("이 배송지를 찾을 수 없음 updateByEmailAddressName ");
             }
         } else {
-            System.out.println("사용자를 찾을 수 없습니다. 이메일: " + email);
+            System.out.println("updateByEmailAddressName 사용자 못찾음 이메일: " + email);
         }
     }
 
@@ -154,20 +154,20 @@ public class DeliveryAddressInfoService {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) { // 사용자가 존재하는 경우
             User user = optionalUser.get();
-            System.out.println("사용자 찾음: " + user.getEmail());
+            System.out.println("deleteByEmailAndAddressName 사용자 찾음: " + user.getEmail());
 
             Optional<DeliveryAddressInfo> optionalDeliveryAddress = deliveryAddressInfoRepository.findByUserAndAddressName(user, addressName);
             if (optionalDeliveryAddress.isPresent()) { // 배송지가 존재하는 경우
                 DeliveryAddressInfo deliveryAddress = optionalDeliveryAddress.get();
-                System.out.println("배송지 찾음: " + addressName);
+                System.out.println("deleteByEmailAndAddressName 배송지 찾음: " + addressName);
 
                 deliveryAddressInfoRepository.delete(deliveryAddress);
-                System.out.println("배송지 삭제 완료");
+                System.out.println("deleteByEmailAndAddressName 배송지 삭제 완료");
             } else {
-                System.out.println("배송지를 찾을 수 없습니다: " + addressName);
+                System.out.println("deleteByEmailAndAddressName 배송지를 찾을 수 없습니다: " + addressName);
             }
         } else {
-            System.out.println("사용자를 찾을 수 없습니다: " + email);
+            System.out.println("deleteByEmailAndAddressName 사용자를 찾을 수 없습니다: " + email);
         }
     }
 

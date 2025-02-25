@@ -75,11 +75,11 @@ public class AdminInventoryService {
         System.out.println("Service - 전달받은 ID: " + id);
 
         if (id == null) {
-            throw new IllegalArgumentException("조회할 ID 확인 없음");
+            throw new IllegalArgumentException("조회할 ID 제발 찾아주세요 제발요 findById 꺼임");
         }
 
         Inventory book = inventoryRepository.findInventoryByInventoryId(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 책이 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("해당 책이 존재하지 않습니다. ㅋㅋ ㅠㅠ"));
 
         return new InventoryForAdminDto(
                 book.getInventoryId(),
@@ -130,7 +130,7 @@ public class AdminInventoryService {
         System.out.println("Service - 전달받은 ID: " + id);
 
         if (id == null) {
-            throw new IllegalArgumentException("조회할 ID 없음");
+            throw new IllegalArgumentException("조회할 ID 왜 자꾸 없는데 시바라라라라랄라라");
         }
 
         return inventoryRepository.findInventoryByInventoryId(id)
@@ -142,7 +142,7 @@ public class AdminInventoryService {
         System.out.println("Service - 수정 요청 ID: " + dto.getInventoryId());
 
         if (dto.getInventoryId() == null) {
-            throw new IllegalArgumentException("책의 ID");
+            throw new IllegalArgumentException("책의 ID 또 없음 시발 ㅠㅠㅠㅠㅠㅠㅠㅠ");
         }
 
         Inventory book = findInventoryByInventoryId(dto.getInventoryId());
@@ -152,7 +152,5 @@ public class AdminInventoryService {
         book.updateStatus(dto.getStatus());
 
     }
-
-
 
 }
