@@ -16,7 +16,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String index(Model model) {
-        List<InventoryForUserDto> books = userInventoryService.findAllOnSaleBooks();  // ✅ ON_SALES 책만 조회
+        List<InventoryForUserDto> books = userInventoryService.findAllOnSaleBooks();
         model.addAttribute("books", books);
         return "index";
     }

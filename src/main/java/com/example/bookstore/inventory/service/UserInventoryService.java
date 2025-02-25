@@ -15,7 +15,7 @@ public class UserInventoryService {
 
     private final InventoryRepository inventoryRepository;
 
-    // ✅ 생성자 주입 방식 (권장)
+
     @Autowired
     public UserInventoryService(InventoryRepository inventoryRepository) {
         this.inventoryRepository = inventoryRepository;
