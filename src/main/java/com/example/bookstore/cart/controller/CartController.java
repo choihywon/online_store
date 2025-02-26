@@ -25,27 +25,27 @@ public class CartController {
         User user = userService.getAuthenticatedUser();
         List<CartDto> cartList = cartService.findAll(user);
         model.addAttribute("cartList", cartList);
-        return "users/carts/cart"; // ✅ 여기 확인
+        return "users/carts/cart";
     }
 
 
-    /** 📌 장바구니 상품 추가 */
+
     @PostMapping("/add")
     public String addCart(@RequestParam Long inventoryId, @RequestParam int quantity) {
         User user = userService.getAuthenticatedUser();
         AddCartDto dto = new AddCartDto(user.getUserSeq(), inventoryId, quantity);
         cartService.save(dto);
-        return "redirect:/users/carts"; // ✅ 장바구니 페이지로 이동
+        return "redirect:/users/carts";
     }
 
-    /** 📌 장바구니 상품 수량 수정 */
+
     @PostMapping("/edit")
     public String updateCart(@ModelAttribute UpdateCartDto dto) {
         cartService.updateById(dto);
         return "redirect:/users/carts";
     }
 
-    /** 📌 장바구니 상품 삭제 */
+
     @PostMapping("/delete")
     public String deleteFromCart(@RequestParam Long cartId) {
         cartService.deleteById(cartId);

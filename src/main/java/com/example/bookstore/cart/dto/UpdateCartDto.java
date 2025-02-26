@@ -8,6 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class UpdateCartDto {
-    private Long cartId;   // 장바구니 ID
-    private int quantity;  // 변경할 수량
+    private Long cartId;
+    private int quantity;
 }

@@ -33,8 +33,8 @@ public class CartService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
 
         Cart cart = Cart.builder()
-                .user(user)  // ✅ User 객체 직접 조회 후 저장
-                .inventory(inventory)  // ✅ Inventory 객체 직접 조회 후 저장
+                .user(user)
+                .inventory(inventory)
                 .quantity(dto.getQuantity())
                 .build();
         cartRepository.save(cart);
@@ -45,7 +45,7 @@ public class CartService {
     public List<CartDto> findAll(User user) {
         List<Cart> carts = cartRepository.findByUser(user);
 
-        System.out.println("Cart 개수: " + carts.size());
+        System.out.println("Service - findAll Cart 개수: " + carts.size());
 
         return carts.stream()
                 .map(cart -> {
@@ -62,7 +62,7 @@ public class CartService {
                                     cart.getInventory().getPublisher(),
                                     cart.getInventory().getSalePrice(),
                                     cart.getInventory().getThumbnail()
-                            ) : null, // ✅ Inventory가 없으면 null
+                            ) : null,
                             cart.getQuantity()
                     );
                 })
@@ -72,7 +72,7 @@ public class CartService {
 
 
 
-    /** 📌 장바구니 상품 수량 수정 */
+
     @Transactional
     public void updateById(UpdateCartDto dto) {
         Cart cart = cartRepository.findById(dto.getCartId())
@@ -80,7 +80,7 @@ public class CartService {
         cart.updateQuantity(dto.getQuantity());
     }
 
-    /** 📌 장바구니 상품 삭제 */
+    
     @Transactional
     public void deleteById(Long cartId) {
         cartRepository.deleteById(cartId);

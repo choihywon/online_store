@@ -32,7 +32,6 @@ public class Cart {
 
     private LocalDateTime lastModifiedAt;
 
-    /** 수량 변경 */
     public void updateQuantity(int quantity) {
         this.quantity = quantity;
         this.lastModifiedAt = LocalDateTime.now();

@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class AddCartDto {
-    private Long userId;       // 사용자 ID
-    private Long inventoryId;  // 책 ID
-    private int quantity;      // 수량
+    private Long userId;
+    private Long inventoryId;
+    private int quantity;
 }

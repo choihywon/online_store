@@ -10,15 +10,15 @@ import java.util.Optional;
 
 public interface CartRepository extends JpaRepository<Cart, Long> {
 
-    /** 특정 유저의 장바구니 목록 조회 */
+    // 특정 유저의 장바구니 목록 조회
     List<Cart> findByUser(User user);
 
-    /** 특정 장바구니 아이템 삭제 */
+    // 특정 장바구니 아이템 삭제
     void deleteById(Long cartId);
 
-    /** 특정 유저가 이미 해당 책을 장바구니에 담았는지 확인 */
+    // 특정 유저가 이미 해당 책을 장바구니에 담았는지 확인
     boolean existsByUserAndInventory(User user, Inventory inventory);
 
-    /** 특정 유저의 특정 장바구니 아이템 조회 */
+    // 특정 유저의 특정 장바구니 아이템 조회
     Optional<Cart> findByUserAndInventory(User user, Inventory inventory);
 }
