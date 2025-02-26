@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>장바구니</title>
+</head>
+<body>
+<h2>장바구니</h2>
+
+<table border="1">
+
+
+    <tr>
+        <th>책 표지</th>
+        <th>책 제목</th>
+        <th>ISBN</th>
+        <th>저자</th>
+        <th>출판사</th>
+        <th>판매 가격</th>
+        <th>수량</th>
+        <th>관리</th>
+    </tr>
+    <tr th:each="cart : ${cartList}">
+        <td>
+            <img th:src="${cart.inventoryForUserDto.thumbnail}" width="100">
+        </td>
+        <td th:text="${cart.inventoryForUserDto.title}"></td>
+        <td th:text="${cart.inventoryForUserDto.isbn}"></td>
+        <td th:text="${#strings.arrayJoin(cart.inventoryForUserDto.authors, ', ')}"></td>
+        <td th:text="${cart.inventoryForUserDto.publisher}"></td>
+        <td th:text="${cart.inventoryForUserDto.salePrice} + '원'"></td>
+        <td>
+            <form action="/users/carts/edit" method="post">
+                <input type="hidden" name="cartId" th:value="${cart.cartId}">
+                <input type="number" name="quantity" th:value="${cart.quantity}" min="1">
+                <button type="submit">수량 변경</button>
+            </form>
+        </td>
+        <td>
+            <form action="/users/carts/delete" method="post">
+                <input type="hidden" name="cartId" th:value="${cart.cartId}">
+                <button type="submit">🗑 삭제</button>
+            </form>
+        </td>
+    </tr>
+</table>
+
+<a href="/">홈으로</a>
+</body>
+</html>

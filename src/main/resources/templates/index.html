@@ -7,21 +7,21 @@
 <body>
 <h1>Welcome to Bookstore</h1>
 
-
+<!-- 사용자 메뉴 -->
 <div th:if="${#authorization.expression('isAnonymous()')}">
   <p><a href="/users/join">회원가입</a></p>
   <p><a href="/users/login">로그인</a></p>
 </div>
 
-
 <div th:if="${#authorization.expression('isAuthenticated()')}">
   <p><a href="/users/mypage">마이페이지</a></p>
+  <p><a href="/users/carts">🛒 장바구니</a></p>
   <form action="/logout" method="post">
     <button type="submit">로그아웃</button>
   </form>
 </div>
 
-
+<!-- 관리자 메뉴 -->
 <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
   <h2>관리자 메뉴</h2>
   <p><a href="/admin/users">유저 관리</a></p>
@@ -30,6 +30,7 @@
   <p><a href="/admin/inventory">등록된 책 목록 조회</a></p>
 </div>
 
+<!-- 판매 중인 책 목록 -->
 <h2>판매 중인 책 목록</h2>
 <table border="1">
   <tr>
@@ -39,6 +40,8 @@
     <th>출판사</th>
     <th>가격</th>
     <th>썸네일</th>
+    <th>구매</th>
+    <th>장바구니</th>
   </tr>
   <tr th:each="book : ${books}">
     <td th:text="${book.title}"></td>
@@ -47,8 +50,45 @@
     <td th:text="${book.publisher}"></td>
     <td th:text="${book.salePrice} + '원'"></td>
     <td><img th:src="${book.thumbnail}" width="100"></td>
+
+    <!-- 구매하기 버튼 -->
+    <td>
+      <form action="/users/purchase" method="post">
+        <input type="hidden" name="inventoryId" th:value="${book.inventoryId}">
+        <input type="hidden" name="quantity" value="1">
+        <button type="submit">구매하기</button>
+      </form>
+    </td>
+
+    <!-- 장바구니 추가 버튼 -->
+    <td>
+      <button type="button" th:attr="onclick=|openCartPopup('${book.inventoryId}')|">장바구니</button>
+    </td>
   </tr>
 </table>
+
+<!-- 장바구니 추가 팝업 -->
+<div id="cartPopup" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:20px; border:1px solid black;">
+  <h3>장바구니 추가</h3>
+  <form action="/users/carts/add" method="post">
+    <input type="hidden" name="inventoryId" id="cartInventoryId">
+    <label>수량: </label>
+    <input type="number" name="quantity" min="1" value="1">
+    <button type="submit">추가</button>
+    <button type="button" onclick="closeCartPopup()">취소</button>
+  </form>
+</div>
+
+<script>
+  function openCartPopup(inventoryId) {
+    document.getElementById("cartInventoryId").value = inventoryId;
+    document.getElementById("cartPopup").style.display = "block";
+  }
+
+  function closeCartPopup() {
+    document.getElementById("cartPopup").style.display = "none";
+  }
+</script>
 
 </body>
 </html>

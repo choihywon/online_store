@@ -7,6 +7,9 @@ import com.example.bookstore.user.domain.UserRole;
 import com.example.bookstore.user.dto.*;
 import com.example.bookstore.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +49,15 @@ public class UserService {
                 user.getCreatedAt(),
                 user.getLastModifiedAt()
         );
+    }
+    public User getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalStateException("인증된 사용자가 없습니다.");
+        }
+        String email = authentication.getName(); // 현재 로그인한 사용자의 이메일 가져오기
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
     }
 
     @Transactional(readOnly = true)
