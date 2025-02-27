@@ -15,7 +15,7 @@
 
 <div th:if="${#authorization.expression('isAuthenticated()')}">
   <p><a href="/users/mypage">마이페이지</a></p>
-  <p><a href="/users/carts">🛒 장바구니</a></p>
+  <p><a href="/users/carts">장바구니</a></p>
   <form action="/logout" method="post">
     <button type="submit">로그아웃</button>
   </form>

@@ -24,9 +24,18 @@ public class CartController {
     public String findAll(Model model) {
         User user = userService.getAuthenticatedUser();
         List<CartDto> cartList = cartService.findAll(user);
+
+        // 장바구니 총 가격 계산
+        int cartTotalPrice = cartList.stream()
+                .mapToInt(cart -> cart.getInventoryForUserDto().getSalePrice() * cart.getQuantity())
+                .sum();
+
         model.addAttribute("cartList", cartList);
+        model.addAttribute("cartTotalPrice", cartTotalPrice);
+
         return "users/carts/cart";
     }
+
 
 
 

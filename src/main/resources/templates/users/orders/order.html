@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>주문 목록</title>
+</head>
+<body>
+<h2>주문 목록</h2>
+
+<table border="1">
+  <tr>
+    <th>주문 번호</th>
+    <th>상태</th>
+    <th>주문 날짜</th>
+    <th>주문 상세</th>
+    <th>취소</th>
+  </tr>
+  <tr th:each="order : ${orders}">
+    <td th:text="${order.orderId}"></td>
+    <td th:text="${order.status}"></td>
+    <td th:text="${#temporals.format(order.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+    <td>
+      <a th:href="@{/users/orders/detail(orderId=${order.orderId})}">주문 상세보기</a>
+    </td>
+    <td>
+      <form th:if="${order.status == 'PENDING' || order.status == 'PAID'}"
+            th:action="@{/users/orders/cancel}"
+            method="post">
+        <input type="hidden" name="orderId" th:value="${order.orderId}">
+        <button type="submit">주문 취소</button>
+      </form>
+    </td>
+  </tr>
+</table>
+
+<a href="/">홈으로</a>
+</body>
+</html>

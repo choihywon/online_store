@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>주문 상세 내역</title>
+</head>
+<body>
+<h2>주문 상세 내역</h2>
+
+<table border="1">
+    <tr>
+        <th>상품명</th>
+        <th>수량</th>
+        <th>가격</th>
+        <th>주문 날짜</th>
+        <th>마지막 수정 날짜</th>
+    </tr>
+    <tr th:each="item : ${orderItems}">
+        <td th:text="${item.inventoryForUserDto.title}"></td>
+        <td th:text="${item.quantity}"></td>
+        <td th:text="${item.price}"></td>
+        <td th:text="${#temporals.format(item.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+        <td th:text="${#temporals.format(item.lastModifiedAt, 'yyyy-MM-dd HH:mm')}"></td>
+    </tr>
+</table>
+
+<a href="/users/orders">주문 목록으로</a>
+</body>
+</html>

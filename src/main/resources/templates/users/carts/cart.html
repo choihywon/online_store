@@ -8,8 +8,6 @@
 <h2>장바구니</h2>
 
 <table border="1">
-
-
     <tr>
         <th>책 표지</th>
         <th>책 제목</th>
@@ -32,18 +30,24 @@
         <td>
             <form action="/users/carts/edit" method="post">
                 <input type="hidden" name="cartId" th:value="${cart.cartId}">
-                <input type="number" name="quantity" th:value="${cart.quantity}" min="1">
-                <button type="submit">수량 변경</button>
+                <input type="number" name="quantity" th:value="${cart.quantity}" min="1"
+                       onChange="this.form.submit()"> <!-- 자동 제출 -->
             </form>
         </td>
         <td>
-            <form action="/users/carts/delete" method="post">
+            <form action="/users/carts/delete" method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');">
                 <input type="hidden" name="cartId" th:value="${cart.cartId}">
-                <button type="submit">🗑 삭제</button>
+                <button type="submit">삭제</button>
             </form>
         </td>
     </tr>
 </table>
+
+<h3>총 가격: <span th:text="${#numbers.formatInteger(cartTotalPrice, 1, 'COMMA')} + '원'"></span></h3>
+
+<form action="/users/orders" method="post">
+    <button type="submit">주문하기</button>
+</form>
 
 <a href="/">홈으로</a>
 </body>
