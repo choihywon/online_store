@@ -45,7 +45,7 @@
 
 <h3>총 가격: <span th:text="${#numbers.formatInteger(cartTotalPrice, 1, 'COMMA')} + '원'"></span></h3>
 
-<form action="/users/orders" method="post">
+<form action="/users/orders/form" method="post">
     <button type="submit">주문하기</button>
 </form>
 

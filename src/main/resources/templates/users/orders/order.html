@@ -1,11 +1,15 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>주문 목록</title>
 </head>
 <body>
 <h2>주문 목록</h2>
+
+<div th:if="${errorMessage}">
+  <p th:text="${errorMessage}"></p>
+</div>
 
 <table border="1">
   <tr>
@@ -23,9 +27,8 @@
       <a th:href="@{/users/orders/detail(orderId=${order.orderId})}">주문 상세보기</a>
     </td>
     <td>
-      <form th:if="${order.status == 'PENDING' || order.status == 'PAID'}"
-            th:action="@{/users/orders/cancel}"
-            method="post">
+      <form th:if="${order.status == 'PENDING' or order.status == 'PAID'}"
+            th:action="@{/users/orders/cancel}" method="post">
         <input type="hidden" name="orderId" th:value="${order.orderId}">
         <button type="submit">주문 취소</button>
       </form>
