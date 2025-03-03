@@ -5,25 +5,27 @@
     <title>주문 상세</title>
 </head>
 <body>
-<h2>주문 상세</h2>
+<h2>주문 상세 정보</h2>
 
+<!-- ✅ 주문 정보 -->
+<h3>주문 번호: <span th:text="${order.orderId}"></span></h3>
+<h3>주문 상태: <span th:text="${order.status}"></span></h3>
+<h3>주문 날짜: <span th:text="${#temporals.format(order.createdAt, 'yyyy-MM-dd HH:mm')}"></span></h3>
+
+<!-- ✅ 주문한 상품 목록 -->
+<h3>주문한 상품</h3>
 <table border="1">
     <tr>
         <th>책 제목</th>
+        <th>판매 가격</th>
         <th>수량</th>
-        <th>가격</th>
     </tr>
-    <tr th:each="item : ${orderItems}">
-        <td th:text="${item.inventoryForUserDto.title}"></td>
-        <td th:text="${item.quantity}"></td>
-        <td th:text="${item.price} + '원'"></td>
+    <tr th:each="orderItem : ${orderItems}">
+        <td th:text="${orderItem.inventoryForUserDto.title}"></td>
+        <td th:text="${orderItem.price} + '원'"></td>
+        <td th:text="${orderItem.quantity}"></td>
     </tr>
 </table>
-
-<h3>배송지 정보</h3>
-<p th:text="'배송지: ' + ${order.deliveryAddress.addressName}"></p>
-<p th:text="'주소: ' + ${order.deliveryAddress.streetAddr}"></p>
-<p th:text="'상세 주소: ' + ${order.deliveryAddress.detailAddr}"></p>
 
 <a href="/users/orders">주문 목록으로 돌아가기</a>
 </body>

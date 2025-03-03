@@ -37,10 +37,17 @@ public class OrderController {
 
     @GetMapping("/detail")
     public String orderDetail(@RequestParam Long orderId, Model model) {
+        OrderDto order = orderService.findOrderById(orderId); // ✅ OrderDto 사용
         List<OrderItemDto> orderItems = orderItemService.findByOrder(orderId);
+
+        model.addAttribute("order", order);
         model.addAttribute("orderItems", orderItems);
+
         return "users/orders/orderDetail";
     }
+
+
+
 
     @GetMapping("/form")
     public String showOrderForm(Model model) {
@@ -114,9 +121,14 @@ public class OrderController {
 
 
     @PostMapping("/cancel")
-    public String cancelOrder(@RequestParam Long orderId) {
-        User user = userService.getAuthenticatedUser();
-        orderService.cancelOrder(orderId, user.getUserSeq());
+    public String cancelOrder(@RequestParam Long orderId, RedirectAttributes redirectAttributes) {
+        try {
+            User user = userService.getAuthenticatedUser();
+            orderService.cancelOrder(orderId, user.getUserSeq());
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
         return "redirect:/users/orders";
     }
+
 }

@@ -16,6 +16,7 @@
 <div th:if="${#authorization.expression('isAuthenticated()')}">
   <p><a href="/users/mypage">마이페이지</a></p>
   <p><a href="/users/carts">장바구니</a></p>
+  <p><a href="/users/orders">주문 목록</a></p>
   <form action="/logout" method="post">
     <button type="submit">로그아웃</button>
   </form>
@@ -28,6 +29,7 @@
   <p><a href="/admin/blacklist">블랙리스트 관리</a></p>
   <p><a href="/admin/inventory/search-page">책 검색 및 등록</a></p>
   <p><a href="/admin/inventory">등록된 책 목록 조회</a></p>
+
 </div>
 
 <!-- 판매 중인 책 목록 -->

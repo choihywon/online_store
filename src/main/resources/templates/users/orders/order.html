@@ -26,13 +26,20 @@
     <td>
       <a th:href="@{/users/orders/detail(orderId=${order.orderId})}">주문 상세보기</a>
     </td>
-    <td>
-      <form th:if="${order.status == 'PENDING' or order.status == 'PAID'}"
-            th:action="@{/users/orders/cancel}" method="post">
+
+    <!-- ✅ 주문 상태가 PENDING 또는 PAID일 때만 취소 버튼 표시 -->
+    <td th:if="${order.status.name() == 'PENDING' or order.status.name() == 'PAID'}">
+      <form th:action="@{/users/orders/cancel}" method="post">
         <input type="hidden" name="orderId" th:value="${order.orderId}">
         <button type="submit">주문 취소</button>
       </form>
     </td>
+
+    <!-- ✅ 주문 상태가 CANCELLED일 경우 '취소됨' 표시 -->
+    <td th:if="${order.status.name() == 'CANCELLED'}">
+      <span>취소됨</span>
+    </td>
+
   </tr>
 </table>
 

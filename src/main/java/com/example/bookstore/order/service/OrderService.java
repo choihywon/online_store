@@ -93,6 +93,17 @@ public class OrderService {
         return deliveryAddressInfoRepository.findByUser(user);
     }
 
+    @Transactional(readOnly = true)
+    public OrderDto findOrderById(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 주문을 찾을 수 없습니다. (orderId: " + orderId + ")"));
+
+        return new OrderDto(
+                order.getOrderId(),
+                order.getStatus(),
+                order.getCreatedAt()
+        );
+    }
 
     @Transactional(readOnly = true)
     public List<OrderDto> findByUser(Long userId) {
