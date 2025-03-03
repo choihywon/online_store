@@ -7,7 +7,8 @@
 <body>
 <h2>주문서 작성</h2>
 
-<form action="/users/orders" method="post">
+<!-- ✅ `POST` 요청을 `/users/orders/form`으로 보냄 -->
+<form action="/users/orders/form" method="post">
     <h3>배송지 선택</h3>
 
     <!-- ✅ 기존 배송지 목록 표시 -->
@@ -52,9 +53,10 @@
         </tr>
     </table>
 
+    <!-- ✅ 주문 완료 버튼 (POST 요청) -->
     <button type="submit">주문 완료</button>
+</form>
 
-
-    <a href="/">홈으로</a>
+<a href="/">홈으로</a>
 </body>
 </html>
