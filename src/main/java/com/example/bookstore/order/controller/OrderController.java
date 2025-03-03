@@ -1,6 +1,7 @@
 package com.example.bookstore.order.controller;
 
 import com.example.bookstore.cart.dto.CartDto;
+import com.example.bookstore.cart.repository.CartRepository;
 import com.example.bookstore.cart.service.CartService;
 import com.example.bookstore.order.dto.OrderDto;
 import com.example.bookstore.order.dto.OrderItemDto;
@@ -26,6 +27,7 @@ public class OrderController {
     private final OrderItemService orderItemService;
     private final UserService userService;
     private final CartService cartService;
+    private final CartRepository cartRepository;
 
     @GetMapping
     public String showOrders(Model model) {
@@ -49,17 +51,36 @@ public class OrderController {
 
 
 
+//    @GetMapping("/form")
+//    public String showOrderForm(@RequestParam List<Long> cartIds, Model model) {
+//        User user = userService.getAuthenticatedUser();
+//        List<DeliveryAddressInfo> deliveryAddresses = orderService.findDeliveryAddressesByUser(user);
+//        List<CartDto> cartList = cartService.findCartsByIds(cartIds); // ✅ 정상 호출 가능
+//
+//        model.addAttribute("deliveryAddresses", deliveryAddresses);
+//        model.addAttribute("cartList", cartList);
+//
+//        return "users/orders/orderForm";
+//    }
     @GetMapping("/form")
     public String showOrderForm(@RequestParam List<Long> cartIds, Model model) {
         User user = userService.getAuthenticatedUser();
         List<DeliveryAddressInfo> deliveryAddresses = orderService.findDeliveryAddressesByUser(user);
-        List<CartDto> cartList = cartService.findCartsByIds(cartIds); // ✅ 정상 호출 가능
+
+        // ✅ `cartIds`가 장바구니 ID인지, Inventory ID인지 체크
+        List<CartDto> cartList;
+        if (cartRepository.existsById(cartIds.get(0))) {
+            cartList = cartService.findCartsByIds(cartIds); // ✅ 장바구니에서 주문하는 경우
+        } else {
+            cartList = cartService.findBooksByInventoryIds(cartIds); // ✅ 홈에서 바로 구매하는 경우
+        }
 
         model.addAttribute("deliveryAddresses", deliveryAddresses);
         model.addAttribute("cartList", cartList);
 
         return "users/orders/orderForm";
     }
+
 
 
 

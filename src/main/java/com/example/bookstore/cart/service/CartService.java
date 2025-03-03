@@ -87,6 +87,26 @@ public class CartService {
                 cart.getQuantity()
         )).collect(Collectors.toList());
     }
+    @Transactional(readOnly = true)
+    public List<CartDto> findBooksByInventoryIds(List<Long> inventoryIds) {
+        List<Inventory> inventories = inventoryRepository.findAllById(inventoryIds);
+
+        return inventories.stream()
+                .map(inventory -> new CartDto(
+                        null, // 장바구니 ID 없음
+                        new InventoryForUserDto(
+                                inventory.getInventoryId(),
+                                inventory.getTitle(),
+                                inventory.getIsbn(),
+                                inventory.getAuthors() != null ? inventory.getAuthors().split(",") : new String[]{},
+                                inventory.getPublisher(),
+                                inventory.getSalePrice(),
+                                inventory.getThumbnail()
+                        ),
+                        1 // 기본 수량 1
+                ))
+                .collect(Collectors.toList());
+    }
 
 
     @Transactional

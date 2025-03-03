@@ -54,13 +54,14 @@
     <td><img th:src="${book.thumbnail}" width="100"></td>
 
     <!-- 구매하기 버튼 -->
+    <!-- 구매하기 버튼 -->
     <td>
-      <form action="/users/purchase" method="post">
-        <input type="hidden" name="inventoryId" th:value="${book.inventoryId}">
-        <input type="hidden" name="quantity" value="1">
+      <form th:action="@{/users/orders/form}" method="get">
+        <input type="hidden" name="cartIds" th:value="${book.inventoryId}">
         <button type="submit">구매하기</button>
       </form>
     </td>
+
 
     <!-- 장바구니 추가 버튼 -->
     <td>
