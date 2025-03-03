@@ -46,11 +46,14 @@
             <th>수량</th>
         </tr>
         <tr th:each="cart : ${cartList}">
-            <td th:text="${cart.inventoryForUserDto.title}"></td>
-            <td th:text="${cart.inventoryForUserDto.salePrice} + '원'"></td>
-            <td th:text="${cart.quantity}"></td>
-            <input type="hidden" name="cartIds" th:value="${cart.cartId}">
+            <td th:text="${cart.inventoryForUserDto != null ? cart.inventoryForUserDto.title : cart.title}"></td>
+            <td th:text="${cart.inventoryForUserDto != null ? cart.inventoryForUserDto.salePrice : cart.salePrice} + '원'"></td>
+            <td>
+                <input type="number" name="quantities" th:value="${cart.quantity != null ? cart.quantity : 1}" min="1">
+            </td>
+            <input type="hidden" name="cartIds" th:value="${cart.cartId != null ? cart.cartId : cart.inventoryForUserDto.inventoryId}">
         </tr>
+
     </table>
 
     <!-- ✅ 주문 완료 버튼 (POST 요청) -->

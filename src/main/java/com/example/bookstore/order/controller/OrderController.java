@@ -67,12 +67,14 @@ public class OrderController {
         User user = userService.getAuthenticatedUser();
         List<DeliveryAddressInfo> deliveryAddresses = orderService.findDeliveryAddressesByUser(user);
 
-        // ✅ `cartIds`가 장바구니 ID인지, Inventory ID인지 체크
         List<CartDto> cartList;
-        if (cartRepository.existsById(cartIds.get(0))) {
-            cartList = cartService.findCartsByIds(cartIds); // ✅ 장바구니에서 주문하는 경우
+
+        if (cartIds.size() == 1 && !cartRepository.existsById(cartIds.get(0))) {
+            // ✅ 홈에서 바로 구매하는 경우 (Inventory ID를 사용)
+            cartList = cartService.findBooksByInventoryIds(cartIds);
         } else {
-            cartList = cartService.findBooksByInventoryIds(cartIds); // ✅ 홈에서 바로 구매하는 경우
+            // ✅ 장바구니에서 구매하는 경우 (Cart ID를 사용)
+            cartList = cartService.findCartsByIds(cartIds);
         }
 
         model.addAttribute("deliveryAddresses", deliveryAddresses);
@@ -113,6 +115,7 @@ public class OrderController {
     @PostMapping("/form")
     public String createOrder(
             @RequestParam List<Long> cartIds,
+            @RequestParam List<Integer> quantities,
             @RequestParam(required = false) String deliveryAddressId,
             @RequestParam(required = false) String addressName,
             @RequestParam(required = false) String zipcode,
@@ -121,7 +124,7 @@ public class OrderController {
             @RequestParam(required = false) String etc,
             RedirectAttributes redirectAttributes) {
 
-        if (cartIds == null || cartIds.isEmpty()) {
+        if (cartIds.isEmpty()) {
             redirectAttributes.addFlashAttribute("errorMessage", "주문할 상품을 선택해야 합니다.");
             return "redirect:/users/orders/form";
         }
@@ -130,24 +133,19 @@ public class OrderController {
         DeliveryAddressInfo deliveryAddress;
 
         if (deliveryAddressId == null || deliveryAddressId.trim().isEmpty() || "new".equals(deliveryAddressId)) {
-            if (addressName == null || addressName.trim().isEmpty() || zipcode == null || zipcode.trim().isEmpty() || streetAddr == null || streetAddr.trim().isEmpty()) {
+            if (addressName == null || zipcode == null || streetAddr == null) {
                 redirectAttributes.addFlashAttribute("errorMessage", "배송지 정보를 입력해주세요.");
                 return "redirect:/users/orders/form";
             }
             deliveryAddress = new DeliveryAddressInfo(user, addressName, zipcode, streetAddr, detailAddr, etc);
         } else {
-            try {
-                Long parsedAddressId = Long.parseLong(deliveryAddressId);
-                deliveryAddress = orderService.getDeliveryAddressById(parsedAddressId);
-            } catch (NumberFormatException e) {
-                redirectAttributes.addFlashAttribute("errorMessage", "잘못된 배송지 정보입니다.");
-                return "redirect:/users/orders/form";
-            }
+            deliveryAddress = orderService.getDeliveryAddressById(Long.parseLong(deliveryAddressId));
         }
 
-        orderService.saveSelectedItems(user.getUserSeq(), cartIds, deliveryAddress);
+        orderService.saveSelectedItems(user.getUserSeq(), cartIds, quantities, deliveryAddress);
         return "redirect:/users/orders";
     }
+
 
 
 

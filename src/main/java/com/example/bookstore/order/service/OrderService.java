@@ -74,22 +74,26 @@ public class OrderService {
         // ✅ 주문한 상품 장바구니에서 삭제
         cartRepository.deleteAll(selectedCarts);
     }
+
+
     @Transactional
-    public void saveSelectedItems(Long userId, List<Long> cartIds, DeliveryAddressInfo deliveryAddress) {
+    public void saveSelectedItems(Long userId, List<Long> cartIds, List<Integer> quantities, DeliveryAddressInfo deliveryAddress) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
 
         List<Cart> selectedCarts = cartRepository.findAllById(cartIds);
-        if (selectedCarts.isEmpty()) {
-            throw new IllegalStateException("선택된 장바구니 상품이 없습니다.");
+        List<Inventory> selectedInventories = inventoryRepository.findAllById(cartIds);
+
+        if (selectedCarts.isEmpty() && selectedInventories.isEmpty()) {
+            throw new IllegalStateException("선택된 상품이 없습니다.");
         }
 
-        // ✅ 배송지가 저장되지 않은 경우 반드시 저장 후 사용
+        // 배송지 정보 저장
         if (deliveryAddress.getId() == null) {
             deliveryAddress = deliveryAddressInfoRepository.save(deliveryAddress);
         }
 
-        // ✅ 주문 생성
+        // 주문 생성
         Order order = Order.builder()
                 .user(user)
                 .deliveryAddress(deliveryAddress)
@@ -99,19 +103,16 @@ public class OrderService {
                 .build();
         orderRepository.save(order);
 
-        // ✅ 주문 아이템 추가 및 재고 차감
+        // 장바구니 주문인 경우
         for (Cart cart : selectedCarts) {
             Inventory inventory = cart.getInventory();
-
             if (cart.getQuantity() > inventory.getQuantity()) {
-                throw new IllegalStateException("재고 부족: " + inventory.getTitle() + " (남은 수량: " + inventory.getQuantity() + ")");
+                throw new IllegalStateException("재고 부족: " + inventory.getTitle());
             }
 
-            // ✅ 기존 `setQuantity()` 대신 `updateQuantity()` 사용
             inventory.updateQuantity(inventory.getQuantity() - cart.getQuantity());
-            inventoryRepository.save(inventory); // 🚀 변경 사항을 DB에 저장
+            inventoryRepository.save(inventory);
 
-            // ✅ 주문 아이템 추가
             OrderItem orderItem = OrderItem.builder()
                     .order(order)
                     .inventory(inventory)
@@ -123,10 +124,32 @@ public class OrderService {
             orderItemRepository.save(orderItem);
         }
 
-        // ✅ 주문한 상품 장바구니에서 삭제
+        // 개별 주문인 경우
+        for (int i = 0; i < selectedInventories.size(); i++) {
+            Inventory inventory = selectedInventories.get(i);
+            int quantity = quantities.get(i);
+
+            if (quantity > inventory.getQuantity()) {
+                throw new IllegalStateException("재고 부족: " + inventory.getTitle());
+            }
+
+            inventory.updateQuantity(inventory.getQuantity() - quantity);
+            inventoryRepository.save(inventory);
+
+            OrderItem orderItem = OrderItem.builder()
+                    .order(order)
+                    .inventory(inventory)
+                    .quantity(quantity)
+                    .price(inventory.getSalePrice() * quantity)
+                    .createdAt(LocalDateTime.now())
+                    .lastModifiedAt(LocalDateTime.now())
+                    .build();
+            orderItemRepository.save(orderItem);
+        }
+
+        // 장바구니에서 선택한 상품 삭제
         cartRepository.deleteAll(selectedCarts);
     }
-
 
 
 
