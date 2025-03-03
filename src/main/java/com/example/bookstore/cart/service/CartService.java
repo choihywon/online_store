@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,13 +33,25 @@ public class CartService {
         Inventory inventory = inventoryRepository.findById(dto.getInventoryId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
 
-        Cart cart = Cart.builder()
-                .user(user)
-                .inventory(inventory)
-                .quantity(dto.getQuantity())
-                .build();
-        cartRepository.save(cart);
+        // ✅ 장바구니에서 동일한 inventoryId의 책이 있는지 확인
+        Optional<Cart> existingCart = cartRepository.findByUserAndInventory(user, inventory);
+
+        if (existingCart.isPresent()) {
+            // ✅ 기존 항목이 있으면 수량 증가
+            Cart cart = existingCart.get();
+            cart.updateQuantity(cart.getQuantity() + dto.getQuantity());
+        } else {
+            // ✅ 기존 항목이 없으면 새로 추가
+            Cart newCart = Cart.builder()
+                    .user(user)
+                    .inventory(inventory)
+                    .quantity(dto.getQuantity())
+                    .build();
+            cartRepository.save(newCart);
+        }
     }
+
+
 
 
     @Transactional(readOnly = true)

@@ -86,10 +86,10 @@ public class OrderService {
 
         // ✅ 배송지가 저장되지 않은 경우 반드시 저장 후 사용
         if (deliveryAddress.getId() == null) {
-            deliveryAddress = deliveryAddressInfoRepository.save(deliveryAddress); // 🚀 저장 후 ID 생성됨
+            deliveryAddress = deliveryAddressInfoRepository.save(deliveryAddress);
         }
 
-        // ✅ 주문 생성 (🚀 deliveryAddress가 DB에 저장된 값이므로 NULL 아님)
+        // ✅ 주문 생성
         Order order = Order.builder()
                 .user(user)
                 .deliveryAddress(deliveryAddress)
@@ -98,7 +98,36 @@ public class OrderService {
                 .lastModifiedAt(LocalDateTime.now())
                 .build();
         orderRepository.save(order);
+
+        // ✅ 주문 아이템 추가 및 재고 차감
+        for (Cart cart : selectedCarts) {
+            Inventory inventory = cart.getInventory();
+
+            if (cart.getQuantity() > inventory.getQuantity()) {
+                throw new IllegalStateException("재고 부족: " + inventory.getTitle() + " (남은 수량: " + inventory.getQuantity() + ")");
+            }
+
+            // ✅ 기존 `setQuantity()` 대신 `updateQuantity()` 사용
+            inventory.updateQuantity(inventory.getQuantity() - cart.getQuantity());
+            inventoryRepository.save(inventory); // 🚀 변경 사항을 DB에 저장
+
+            // ✅ 주문 아이템 추가
+            OrderItem orderItem = OrderItem.builder()
+                    .order(order)
+                    .inventory(inventory)
+                    .quantity(cart.getQuantity())
+                    .price(cart.getInventory().getSalePrice() * cart.getQuantity())
+                    .createdAt(LocalDateTime.now())
+                    .lastModifiedAt(LocalDateTime.now())
+                    .build();
+            orderItemRepository.save(orderItem);
+        }
+
+        // ✅ 주문한 상품 장바구니에서 삭제
+        cartRepository.deleteAll(selectedCarts);
     }
+
+
 
 
 
@@ -147,6 +176,16 @@ public class OrderService {
             throw new IllegalStateException("배송이 시작된 주문은 취소할 수 없습니다.");
         }
 
+        // ✅ 주문 상태 변경 (취소 처리)
         order.updateStatus(OrderStatus.CANCELLED);
+
+        // ✅ 주문 아이템을 찾아서 재고 복구
+        List<OrderItem> orderItems = orderItemRepository.findByOrder(order);
+        for (OrderItem orderItem : orderItems) {
+            Inventory inventory = orderItem.getInventory();
+            inventory.updateQuantity(inventory.getQuantity() + orderItem.getQuantity()); // ✅ 재고 복구
+            inventoryRepository.save(inventory); // ✅ 변경 사항 DB 반영
+        }
     }
+
 }
