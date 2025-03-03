@@ -7,8 +7,14 @@
 <body>
 <h2>주문서 작성</h2>
 
-<!-- ✅ `POST` 요청을 `/users/orders/form`으로 보냄 -->
+<!-- ✅ 오류 메시지 표시 (재고 부족 또는 입력 오류) -->
+<div th:if="${errorMessage}" style="color: red; font-weight: bold;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<!-- ✅ 주문서 작성 폼 -->
 <form action="/users/orders/form" method="post">
+
     <h3>배송지 선택</h3>
 
     <!-- ✅ 기존 배송지 목록 표시 -->
@@ -38,6 +44,7 @@
     </script>
 
     <!-- ✅ 주문할 상품 목록 -->
+    <!-- ✅ 주문할 상품 목록 -->
     <h3>주문할 상품</h3>
     <table border="1">
         <tr>
@@ -45,7 +52,7 @@
             <th>판매 가격</th>
             <th>수량</th>
         </tr>
-        <tr th:each="cart : ${cartList}">
+        <tr th:each="cart, iterStat : ${cartList}">
             <td th:text="${cart.inventoryForUserDto != null ? cart.inventoryForUserDto.title : cart.title}"></td>
             <td th:text="${cart.inventoryForUserDto != null ? cart.inventoryForUserDto.salePrice : cart.salePrice} + '원'"></td>
             <td>
@@ -53,13 +60,16 @@
             </td>
             <input type="hidden" name="cartIds" th:value="${cart.cartId != null ? cart.cartId : cart.inventoryForUserDto.inventoryId}">
         </tr>
-
     </table>
 
-    <!-- ✅ 주문 완료 버튼 (POST 요청) -->
+    <!-- ✅ 숨겨진 필드로 cartIds 유지 -->
+    <input type="hidden" name="cartIds" th:each="cartId : ${cartIds}" th:value="${cartId}">
+
+    <!-- ✅ 주문 완료 버튼 -->
     <button type="submit">주문 완료</button>
 </form>
 
 <a href="/">홈으로</a>
+
 </body>
 </html>

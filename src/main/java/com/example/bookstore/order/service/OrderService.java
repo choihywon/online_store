@@ -18,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -107,7 +109,7 @@ public class OrderService {
         for (Cart cart : selectedCarts) {
             Inventory inventory = cart.getInventory();
             if (cart.getQuantity() > inventory.getQuantity()) {
-                throw new IllegalStateException("재고 부족: " + inventory.getTitle());
+                throw new IllegalStateException(inventory.getTitle() + "의 재고가 부족합니다.");
             }
 
             inventory.updateQuantity(inventory.getQuantity() - cart.getQuantity());
@@ -130,7 +132,7 @@ public class OrderService {
             int quantity = quantities.get(i);
 
             if (quantity > inventory.getQuantity()) {
-                throw new IllegalStateException("재고 부족: " + inventory.getTitle());
+                throw new IllegalStateException(inventory.getTitle() + "의 재고가 부족합니다.");
             }
 
             inventory.updateQuantity(inventory.getQuantity() - quantity);

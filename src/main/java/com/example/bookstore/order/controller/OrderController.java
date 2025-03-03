@@ -62,26 +62,28 @@ public class OrderController {
 //
 //        return "users/orders/orderForm";
 //    }
-    @GetMapping("/form")
-    public String showOrderForm(@RequestParam List<Long> cartIds, Model model) {
-        User user = userService.getAuthenticatedUser();
-        List<DeliveryAddressInfo> deliveryAddresses = orderService.findDeliveryAddressesByUser(user);
+@GetMapping("/form")
+public String showOrderForm(@RequestParam(required = false) List<Long> cartIds, Model model) {
+    User user = userService.getAuthenticatedUser();
+    List<DeliveryAddressInfo> deliveryAddresses = orderService.findDeliveryAddressesByUser(user);
 
-        List<CartDto> cartList;
+    List<CartDto> cartList = null;
 
-        if (cartIds.size() == 1 && !cartRepository.existsById(cartIds.get(0))) {
-            // ✅ 홈에서 바로 구매하는 경우 (Inventory ID를 사용)
-            cartList = cartService.findBooksByInventoryIds(cartIds);
+    if (cartIds != null && !cartIds.isEmpty()) {
+        if (cartRepository.existsById(cartIds.get(0))) {
+            cartList = cartService.findCartsByIds(cartIds); // ✅ 장바구니에서 주문
         } else {
-            // ✅ 장바구니에서 구매하는 경우 (Cart ID를 사용)
-            cartList = cartService.findCartsByIds(cartIds);
+            cartList = cartService.findBooksByInventoryIds(cartIds); // ✅ 개별 구매
         }
-
-        model.addAttribute("deliveryAddresses", deliveryAddresses);
-        model.addAttribute("cartList", cartList);
-
-        return "users/orders/orderForm";
     }
+
+    model.addAttribute("deliveryAddresses", deliveryAddresses);
+    model.addAttribute("cartList", cartList);
+    model.addAttribute("cartIds", cartIds);
+
+    return "users/orders/orderForm";
+}
+
 
 
 
@@ -135,6 +137,7 @@ public class OrderController {
         if (deliveryAddressId == null || deliveryAddressId.trim().isEmpty() || "new".equals(deliveryAddressId)) {
             if (addressName == null || zipcode == null || streetAddr == null) {
                 redirectAttributes.addFlashAttribute("errorMessage", "배송지 정보를 입력해주세요.");
+                redirectAttributes.addFlashAttribute("cartIds", cartIds);
                 return "redirect:/users/orders/form";
             }
             deliveryAddress = new DeliveryAddressInfo(user, addressName, zipcode, streetAddr, detailAddr, etc);
@@ -142,9 +145,18 @@ public class OrderController {
             deliveryAddress = orderService.getDeliveryAddressById(Long.parseLong(deliveryAddressId));
         }
 
-        orderService.saveSelectedItems(user.getUserSeq(), cartIds, quantities, deliveryAddress);
+        try {
+            orderService.saveSelectedItems(user.getUserSeq(), cartIds, quantities, deliveryAddress);
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute("cartIds", cartIds);
+            return "redirect:/users/orders/form";  // ✅ 재고 부족 시 cartIds 유지
+        }
+
         return "redirect:/users/orders";
     }
+
+
 
 
 
