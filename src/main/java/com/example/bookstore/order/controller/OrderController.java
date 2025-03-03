@@ -50,16 +50,18 @@ public class OrderController {
 
 
     @GetMapping("/form")
-    public String showOrderForm(Model model) {
+    public String showOrderForm(@RequestParam List<Long> cartIds, Model model) {
         User user = userService.getAuthenticatedUser();
         List<DeliveryAddressInfo> deliveryAddresses = orderService.findDeliveryAddressesByUser(user);
-        List<CartDto> cartList = cartService.findAll(user);
+        List<CartDto> cartList = cartService.findCartsByIds(cartIds); // ✅ 정상 호출 가능
 
         model.addAttribute("deliveryAddresses", deliveryAddresses);
         model.addAttribute("cartList", cartList);
 
-        return "users/orders/orderForm"; // ✅ GET 요청은 주문 폼을 보여줌
+        return "users/orders/orderForm";
     }
+
+
 
 
 //    @PostMapping("/form")
@@ -89,9 +91,9 @@ public class OrderController {
 
     @PostMapping("/form")
     public String createOrder(
-            @RequestParam(required = false) List<Long> cartIds,
-            @RequestParam(required = false) String deliveryAddressId, // ✅ 기존 배송지 ID
-            @RequestParam(required = false) String addressName, // ✅ 새 배송지 정보
+            @RequestParam List<Long> cartIds,
+            @RequestParam(required = false) String deliveryAddressId,
+            @RequestParam(required = false) String addressName,
             @RequestParam(required = false) String zipcode,
             @RequestParam(required = false) String streetAddr,
             @RequestParam(required = false) String detailAddr,
@@ -100,23 +102,33 @@ public class OrderController {
 
         if (cartIds == null || cartIds.isEmpty()) {
             redirectAttributes.addFlashAttribute("errorMessage", "주문할 상품을 선택해야 합니다.");
-            return "redirect:/users/orders/form"; // ✅ 주문 폼으로 다시 이동
+            return "redirect:/users/orders/form";
         }
 
         User user = userService.getAuthenticatedUser();
         DeliveryAddressInfo deliveryAddress;
 
-        if ("new".equals(deliveryAddressId)) {
-            // ✅ 새로운 배송지를 생성하여 저장
+        if (deliveryAddressId == null || deliveryAddressId.trim().isEmpty() || "new".equals(deliveryAddressId)) {
+            if (addressName == null || addressName.trim().isEmpty() || zipcode == null || zipcode.trim().isEmpty() || streetAddr == null || streetAddr.trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("errorMessage", "배송지 정보를 입력해주세요.");
+                return "redirect:/users/orders/form";
+            }
             deliveryAddress = new DeliveryAddressInfo(user, addressName, zipcode, streetAddr, detailAddr, etc);
         } else {
-            // ✅ 기존 배송지 사용
-            deliveryAddress = orderService.getDeliveryAddressById(Long.parseLong(deliveryAddressId));
+            try {
+                Long parsedAddressId = Long.parseLong(deliveryAddressId);
+                deliveryAddress = orderService.getDeliveryAddressById(parsedAddressId);
+            } catch (NumberFormatException e) {
+                redirectAttributes.addFlashAttribute("errorMessage", "잘못된 배송지 정보입니다.");
+                return "redirect:/users/orders/form";
+            }
         }
 
         orderService.saveSelectedItems(user.getUserSeq(), cartIds, deliveryAddress);
         return "redirect:/users/orders";
     }
+
+
 
 
 

@@ -1,54 +1,125 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>장바구니</title>
+
+    <script>
+        function submitSelectedItems() {
+            const checkedItems = document.querySelectorAll('input[name="cartIds"]:checked');
+            if (checkedItems.length === 0) {
+                alert("주문할 상품을 선택하세요.");
+                return;
+            }
+
+            const form = document.createElement("form"); // 동적 폼 생성
+            form.method = "get";
+            form.action = "/users/orders/form";
+
+            checkedItems.forEach(item => {
+                const input = document.createElement("input");
+                input.type = "hidden";
+                input.name = "cartIds";
+                input.value = item.value;
+                form.appendChild(input);
+            });
+
+            document.body.appendChild(form);
+            form.submit(); // 🚀 선택한 상품만 포함하여 주문 페이지로 이동
+        }
+
+        function enableUpdateButton(input) {
+            let form = input.closest("form");
+            let button = form.querySelector(".updateButton");
+            button.disabled = false;
+        }
+    </script>
+
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .button-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+    </style>
 </head>
 <body>
+
 <h2>장바구니</h2>
 
-<table border="1">
-    <tr>
-        <th>책 표지</th>
-        <th>책 제목</th>
-        <th>ISBN</th>
-        <th>저자</th>
-        <th>출판사</th>
-        <th>판매 가격</th>
-        <th>수량</th>
-        <th>관리</th>
-    </tr>
-    <tr th:each="cart : ${cartList}">
-        <td>
-            <img th:src="${cart.inventoryForUserDto.thumbnail}" width="100">
-        </td>
-        <td th:text="${cart.inventoryForUserDto.title}"></td>
-        <td th:text="${cart.inventoryForUserDto.isbn}"></td>
-        <td th:text="${#strings.arrayJoin(cart.inventoryForUserDto.authors, ', ')}"></td>
-        <td th:text="${cart.inventoryForUserDto.publisher}"></td>
-        <td th:text="${cart.inventoryForUserDto.salePrice} + '원'"></td>
-        <td>
-            <form action="/users/carts/edit" method="post">
-                <input type="hidden" name="cartId" th:value="${cart.cartId}">
-                <input type="number" name="quantity" th:value="${cart.quantity}" min="1"
-                       onChange="this.form.submit()"> <!-- 자동 제출 -->
-            </form>
-        </td>
-        <td>
-            <form action="/users/carts/delete" method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');">
-                <input type="hidden" name="cartId" th:value="${cart.cartId}">
-                <button type="submit">삭제</button>
-            </form>
-        </td>
-    </tr>
-</table>
+<!-- 홈 / 마이페이지 이동 버튼 -->
+<div class="button-container">
+    <form th:action="@{/}">
+        <button>홈으로 가기</button>
+    </form>
+    <form th:action="@{/users}">
+        <button>마이페이지</button>
+    </form>
+</div>
 
-<h3>총 가격: <span th:text="${#numbers.formatInteger(cartTotalPrice, 1, 'COMMA')} + '원'"></span></h3>
+<!-- 에러 메시지 표시 -->
+<div th:if="${cartList == null or cartList.isEmpty()}" style="color: red; font-weight: bold;">
+    <p>장바구니에 상품이 없습니다.</p>
+</div>
 
-<form action="/users/orders/form" method="post">
-    <button type="submit">주문하기</button>
-</form>
+<!-- 장바구니 테이블 -->
+<th:block th:if="${cartList != null and not cartList.isEmpty()}">
+    <table>
+        <thead>
+        <tr>
+            <th>선택</th>
+            <th>ID</th>
+            <th>책 표지</th>
+            <th>제목</th>
+            <th>수량</th>
+            <th>삭제</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="cart : ${cartList}">
+            <td>
+                <input type="checkbox" name="cartIds" th:value="${cart.cartId}">
+            </td>
+            <td th:text="${cart.cartId}"></td>
+            <td><img th:src="${cart.inventoryForUserDto.thumbnail}" alt="책 이미지" width="80"></td>
+            <td th:text="${cart.inventoryForUserDto.title}"></td>
 
-<a href="/">홈으로</a>
+            <!-- 수량 변경 -->
+            <td>
+                <form action="/users/carts/edit" method="post">
+                    <input type="hidden" name="cartId" th:value="${cart.cartId}">
+                    <input type="number" name="quantity" th:value="${cart.quantity}" min="1"
+                           onchange="enableUpdateButton(this)">
+                    <button type="submit" class="updateButton" disabled>수정</button>
+                </form>
+            </td>
+
+            <!-- 삭제 버튼 -->
+            <td>
+                <form th:action="@{/users/carts/delete}" method="post">
+                    <input type="hidden" name="cartId" th:value="${cart.cartId}">
+                    <button type="submit">삭제</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- 주문하기 버튼 -->
+    <button type="button" onclick="submitSelectedItems()">선택한 상품 주문하기</button>
+</th:block>
+
 </body>
 </html>

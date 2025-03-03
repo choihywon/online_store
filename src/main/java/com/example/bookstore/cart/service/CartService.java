@@ -70,7 +70,23 @@ public class CartService {
     }
 
 
-
+    @Transactional(readOnly = true)
+    public List<CartDto> findCartsByIds(List<Long> cartIds) {
+        List<Cart> carts = cartRepository.findAllById(cartIds);
+        return carts.stream().map(cart -> new CartDto(
+                cart.getCartId(),
+                new InventoryForUserDto(
+                        cart.getInventory().getInventoryId(),
+                        cart.getInventory().getTitle(),
+                        cart.getInventory().getIsbn(),
+                        cart.getInventory().getAuthors() != null ? cart.getInventory().getAuthors().split(",") : new String[]{},
+                        cart.getInventory().getPublisher(),
+                        cart.getInventory().getSalePrice(),
+                        cart.getInventory().getThumbnail()
+                ),
+                cart.getQuantity()
+        )).collect(Collectors.toList());
+    }
 
 
     @Transactional

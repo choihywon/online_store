@@ -35,6 +35,18 @@ public class CartController {
 
         return "users/carts/cart";
     }
+    @GetMapping("/users/carts")
+    public String showCart(Model model) {
+        User user = userService.getAuthenticatedUser();
+        List<CartDto> cartDtos = cartService.findAll(user);
+
+        if (cartDtos.isEmpty()) {
+            model.addAttribute("errorMessage", "장바구니에 상품이 없습니다.");
+        }
+
+        model.addAttribute("cartDtos", cartDtos);
+        return "cart";  // Thymeleaf에서 "cart.html"을 렌더링하도록 함
+    }
 
 
 

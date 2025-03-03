@@ -34,7 +34,7 @@ public class OrderService {
     private final DeliveryAddressInfoRepository deliveryAddressInfoRepository;
 
     @Transactional
-    public void saveSelectedItems(Long userId, List<Long> cartIds, DeliveryAddressInfo deliveryAddress) {
+    public void createOrder(Long userId, List<Long> cartIds) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
 
@@ -43,16 +43,10 @@ public class OrderService {
             throw new IllegalStateException("선택된 장바구니 상품이 없습니다.");
         }
 
-        // ✅ 새로운 배송지 입력 시 먼저 저장
-        if (deliveryAddress.getId() == null) {
-            deliveryAddressInfoRepository.save(deliveryAddress);
-        }
-
         // ✅ 주문 생성
         Order order = Order.builder()
                 .user(user)
                 .status(OrderStatus.PENDING)
-                .deliveryAddress(deliveryAddress)
                 .createdAt(LocalDateTime.now())
                 .lastModifiedAt(LocalDateTime.now())
                 .build();
@@ -61,10 +55,8 @@ public class OrderService {
         // ✅ 주문 아이템 추가
         for (Cart cart : selectedCarts) {
             Inventory inventory = cart.getInventory();
-
-            // ✅ 주문이 성공하면 재고 차감
             if (cart.getQuantity() > inventory.getQuantity()) {
-                throw new IllegalStateException("재고 부족: " + inventory.getTitle() + " (남은 수량: " + inventory.getQuantity() + ")");
+                throw new IllegalStateException("재고 부족: " + inventory.getTitle());
             }
             inventory.updateQuantity(inventory.getQuantity() - cart.getQuantity());
 
@@ -82,6 +74,33 @@ public class OrderService {
         // ✅ 주문한 상품 장바구니에서 삭제
         cartRepository.deleteAll(selectedCarts);
     }
+    @Transactional
+    public void saveSelectedItems(Long userId, List<Long> cartIds, DeliveryAddressInfo deliveryAddress) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
+
+        List<Cart> selectedCarts = cartRepository.findAllById(cartIds);
+        if (selectedCarts.isEmpty()) {
+            throw new IllegalStateException("선택된 장바구니 상품이 없습니다.");
+        }
+
+        // ✅ 배송지가 저장되지 않은 경우 반드시 저장 후 사용
+        if (deliveryAddress.getId() == null) {
+            deliveryAddress = deliveryAddressInfoRepository.save(deliveryAddress); // 🚀 저장 후 ID 생성됨
+        }
+
+        // ✅ 주문 생성 (🚀 deliveryAddress가 DB에 저장된 값이므로 NULL 아님)
+        Order order = Order.builder()
+                .user(user)
+                .deliveryAddress(deliveryAddress)
+                .status(OrderStatus.PENDING)
+                .createdAt(LocalDateTime.now())
+                .lastModifiedAt(LocalDateTime.now())
+                .build();
+        orderRepository.save(order);
+    }
+
+
 
     @Transactional(readOnly = true)
     public DeliveryAddressInfo getDeliveryAddressById(Long deliveryAddressId) {
