@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>📦 주문 상세 정보</title>
+</head>
+<body>
+
+<h2>📦 주문 상세 정보</h2>
+
+<table border="1">
+    <tr>
+        <th>주문 ID</th>
+        <td th:text="${order.orderId}"></td>
+    </tr>
+    <tr>
+        <th>사용자</th>
+        <td th:text="${order.user.name}"></td>
+    </tr>
+    <tr>
+        <th>배송 주소</th>
+        <td th:text="${order.deliveryAddress.streetAddress}"></td>
+    </tr>
+    <tr>
+        <th>주문 상태</th>
+        <td th:text="${order.status}"></td>
+    </tr>
+    <tr>
+        <th>주문 일자</th>
+        <td th:text="${#temporals.format(order.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+    </tr>
+</table>
+
+<h3>📋 주문 상품 목록</h3>
+<table border="1">
+    <thead>
+    <tr>
+        <th>상품명</th>
+        <th>수량</th>
+        <th>가격</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="orderItem : ${orderItems}">
+        <td th:text="${orderItem.inventory.title}"></td>
+        <td th:text="${orderItem.quantity}"></td>
+        <td th:text="${orderItem.price}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- 뒤로 가기 버튼 -->
+<a href="/admin/orders">목록으로 돌아가기</a>
+
+</body>
+</html>

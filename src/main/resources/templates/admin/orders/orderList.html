@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>📦 관리자 주문 관리</title>
+</head>
+<body>
+
+<h2>📦 주문 관리</h2>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>주문 ID</th>
+        <th>사용자 ID</th>
+        <th>주문 상태</th>
+        <th>주문 일자</th>
+        <th>상태 변경</th>
+        <th>배송 확인</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order : ${orders}">
+        <td th:text="${order.orderId}"></td>
+        <td th:text="'사용자 ID: ' + ${order.user.userSeq}"></td> <!-- ✅ userSeq 사용 -->
+        <td th:text="${order.status.name()}"></td>
+        <td th:text="${#temporals.format(order.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+        <td>
+            <!-- 🚀 PENDING 상태일 경우 "SHIPPING"으로 변경 -->
+            <form th:if="${order.status.name() == 'PENDING'}" th:action="@{/admin/orders/{orderId}/shipping(orderId=${order.orderId})}" method="post">
+                <button type="submit">배송 시작 (SHIPPING)</button>
+            </form>
+
+            <!-- 📦 주문 상태 변경 -->
+            <form th:action="@{/admin/orders/{orderId}/status(orderId=${order.orderId})}" method="post">
+                <select name="status">
+                    <option value="PENDING" th:selected="${order.status.name() == 'PENDING'}">PENDING</option>
+                    <option value="SHIPPING" th:selected="${order.status.name() == 'SHIPPING'}">SHIPPING</option>
+                    <option value="DELIVERED" th:selected="${order.status.name() == 'DELIVERED'}">DELIVERED</option>
+                </select>
+                <button type="submit">업데이트</button>
+            </form>
+        </td>
+        <td>
+            <!-- 🚀 주문이 SHIPPING 상태일 때만 배송 정보 확인 가능 -->
+            <a th:if="${order.status.name() == 'SHIPPING' || order.status.name() == 'DELIVERED'}"
+               th:href="@{/admin/deliveries/order/{orderId}(orderId=${order.orderId})}">배송 정보</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

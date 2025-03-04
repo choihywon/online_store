@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>🚚 주문별 배송 목록</title>
+</head>
+<body>
+
+<h2>🚚 주문 #<span th:text="${orderId}"></span> 배송 목록</h2>
+
+<table border="1">
+  <thead>
+  <tr>
+    <th>배송 ID</th>
+    <th>배송 주소</th>
+    <th>배송 상태</th>
+    <th>배송 시작</th>
+    <th>배송 완료</th>
+    <th>상태 변경</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="delivery : ${deliveries}">
+    <td th:text="${delivery.id}"></td>
+    <td th:text="${delivery.deliveryAddressInfo.streetAddress}"></td>
+    <td th:text="${delivery.status}"></td>
+    <td th:text="${#temporals.format(delivery.startedAt, 'yyyy-MM-dd HH:mm')}"></td>
+    <td th:text="${delivery.arrivedAt != null ? #temporals.format(delivery.arrivedAt, 'yyyy-MM-dd HH:mm') : '-'}"></td>
+    <td>
+      <form th:action="@{/admin/deliveries/{deliveryId}/status(deliveryId=${delivery.id})}" method="post">
+        <select name="status">
+          <option value="SHIPPING" th:selected="${delivery.status == 'SHIPPING'}">SHIPPING</option>
+          <option value="DELIVERED" th:selected="${delivery.status == 'DELIVERED'}">DELIVERED</option>
+        </select>
+        <button type="submit">업데이트</button>
+      </form>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<a href="/admin/orders">📦 주문 목록으로 돌아가기</a>
+
+</body>
+</html>

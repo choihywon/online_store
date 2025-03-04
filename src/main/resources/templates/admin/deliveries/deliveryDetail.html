@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>🚚 배송 상세 정보</title>
+</head>
+<body>
+
+<h2>🚚 배송 상세 정보</h2>
+
+<table border="1">
+    <tr>
+        <th>배송 ID</th>
+        <td th:text="${delivery.id}"></td>
+    </tr>
+    <tr>
+        <th>배송 주소</th>
+        <td th:text="${delivery.deliveryAddressInfo.streetAddress}"></td>
+    </tr>
+    <tr>
+        <th>배송 상태</th>
+        <td th:text="${delivery.status}"></td>
+    </tr>
+    <tr>
+        <th>배송 시작</th>
+        <td th:text="${#temporals.format(delivery.startedAt, 'yyyy-MM-dd HH:mm')}"></td>
+    </tr>
+    <tr>
+        <th>배송 완료</th>
+        <td th:text="${delivery.arrivedAt != null ? #temporals.format(delivery.arrivedAt, 'yyyy-MM-dd HH:mm') : '-'}"></td>
+    </tr>
+</table>
+
+<!-- 뒤로 가기 버튼 -->
+<a href="/admin/deliveries">목록으로 돌아가기</a>
+
+</body>
+</html>
