@@ -56,7 +56,7 @@
     <td><img th:src="${book.thumbnail}" width="100"></td>
 
     <!-- 구매하기 버튼 -->
-    <!-- 구매하기 버튼 -->
+
     <td>
       <form th:action="@{/users/orders/form}" method="get">
         <input type="hidden" name="cartIds" th:value="${book.inventoryId}">

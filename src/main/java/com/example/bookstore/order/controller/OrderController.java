@@ -39,7 +39,7 @@ public class OrderController {
 
     @GetMapping("/detail")
     public String orderDetail(@RequestParam Long orderId, Model model) {
-        OrderDto order = orderService.findOrderById(orderId); // ✅ OrderDto 사용
+        OrderDto order = orderService.findOrderById(orderId);
         List<OrderItemDto> orderItems = orderItemService.findByOrder(orderId);
 
         model.addAttribute("order", order);
@@ -50,18 +50,6 @@ public class OrderController {
 
 
 
-
-//    @GetMapping("/form")
-//    public String showOrderForm(@RequestParam List<Long> cartIds, Model model) {
-//        User user = userService.getAuthenticatedUser();
-//        List<DeliveryAddressInfo> deliveryAddresses = orderService.findDeliveryAddressesByUser(user);
-//        List<CartDto> cartList = cartService.findCartsByIds(cartIds); // ✅ 정상 호출 가능
-//
-//        model.addAttribute("deliveryAddresses", deliveryAddresses);
-//        model.addAttribute("cartList", cartList);
-//
-//        return "users/orders/orderForm";
-//    }
 @GetMapping("/form")
 public String showOrderForm(@RequestParam(required = false) List<Long> cartIds, Model model) {
     User user = userService.getAuthenticatedUser();
@@ -71,9 +59,9 @@ public String showOrderForm(@RequestParam(required = false) List<Long> cartIds, 
 
     if (cartIds != null && !cartIds.isEmpty()) {
         if (cartRepository.existsById(cartIds.get(0))) {
-            cartList = cartService.findCartsByIds(cartIds); // ✅ 장바구니에서 주문
+            cartList = cartService.findCartsByIds(cartIds);
         } else {
-            cartList = cartService.findBooksByInventoryIds(cartIds); // ✅ 개별 구매
+            cartList = cartService.findBooksByInventoryIds(cartIds);
         }
     }
 
@@ -85,34 +73,6 @@ public String showOrderForm(@RequestParam(required = false) List<Long> cartIds, 
 }
 
 
-
-
-
-
-//    @PostMapping("/form")
-//    public String createOrder(
-//            @RequestParam(required = false) List<Long> cartIds,
-//            @RequestParam(required = false) Long deliveryAddressId,
-//            @RequestParam(required = false) String addressName,
-//            @RequestParam(required = false) String zipcode,
-//            @RequestParam(required = false) String streetAddr,
-//            @RequestParam(required = false) String detailAddr,
-//            @RequestParam(required = false) String etc,
-//            RedirectAttributes redirectAttributes) {
-//
-//        if (cartIds == null || cartIds.isEmpty()) {
-//            redirectAttributes.addFlashAttribute("errorMessage", "주문할 상품을 선택해야 합니다.");
-//            return "redirect:/users/orders/form"; // ✅ 주문 폼으로 리디렉션
-//        }
-//
-//        User user = userService.getAuthenticatedUser();
-//        DeliveryAddressInfo deliveryAddress = (deliveryAddressId != null) ?
-//                orderService.getDeliveryAddressById(deliveryAddressId) :
-//                new DeliveryAddressInfo(user, addressName, zipcode, streetAddr, detailAddr, etc);
-//
-//        orderService.saveSelectedItems(user.getUserSeq(), cartIds, deliveryAddress);
-//        return "redirect:/users/orders";
-//    }
 
     @PostMapping("/form")
     public String createOrder(
@@ -150,7 +110,7 @@ public String showOrderForm(@RequestParam(required = false) List<Long> cartIds, 
         } catch (IllegalStateException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             redirectAttributes.addFlashAttribute("cartIds", cartIds);
-            return "redirect:/users/orders/form";  // ✅ 재고 부족 시 cartIds 유지
+            return "redirect:/users/orders/form";
         }
 
         return "redirect:/users/orders";

@@ -20,7 +20,7 @@ public class UserDeliveryController {
     private final UserDeliveryService userDeliveryService;
     private final UserService userService;
 
-    // 📌 사용자의 배송 목록 조회
+
     @GetMapping
     public String showDeliveries(Model model) {
         User user = userService.getAuthenticatedUser();
@@ -29,7 +29,7 @@ public class UserDeliveryController {
         return "users/deliveries/deliveryList";
     }
 
-    // 📌 배송 상세 조회 (본인의 배송만 가능)
+
     @GetMapping("/{deliveryId}")
     public String deliveryDetail(@PathVariable UUID deliveryId, Model model) {
         User user = userService.getAuthenticatedUser();

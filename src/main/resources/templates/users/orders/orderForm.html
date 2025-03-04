@@ -7,24 +7,24 @@
 <body>
 <h2>주문서 작성</h2>
 
-<!-- ✅ 오류 메시지 표시 (재고 부족 또는 입력 오류) -->
+
 <div th:if="${errorMessage}" style="color: red; font-weight: bold;">
     <p th:text="${errorMessage}"></p>
 </div>
 
-<!-- ✅ 주문서 작성 폼 -->
+
 <form action="/users/orders/form" method="post">
 
     <h3>배송지 선택</h3>
 
-    <!-- ✅ 기존 배송지 목록 표시 -->
+
     <div th:each="address, iterStat : ${deliveryAddresses}">
         <input type="radio" name="deliveryAddressId" th:value="${address.id}"
                th:checked="${iterStat.index == 0}">
         <label th:text="${address.addressName + ' | ' + address.streetAddr + ', ' + address.detailAddr + ', ' + address.zipcode}"></label>
     </div>
 
-    <!-- ✅ 새로운 배송지 입력 -->
+
     <h4>새로운 배송지 입력</h4>
     <input type="radio" name="deliveryAddressId" value="new" onclick="toggleNewAddress(true)">
     <label>새로운 배송지 입력</label>
@@ -43,8 +43,8 @@
         }
     </script>
 
-    <!-- ✅ 주문할 상품 목록 -->
-    <!-- ✅ 주문할 상품 목록 -->
+
+
     <h3>주문할 상품</h3>
     <table border="1">
         <tr>
@@ -62,10 +62,10 @@
         </tr>
     </table>
 
-    <!-- ✅ 숨겨진 필드로 cartIds 유지 -->
+
     <input type="hidden" name="cartIds" th:each="cartId : ${cartIds}" th:value="${cartId}">
 
-    <!-- ✅ 주문 완료 버튼 -->
+
     <button type="submit">주문 완료</button>
 </form>
 

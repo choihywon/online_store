@@ -44,9 +44,9 @@ public class AdminOrderController {
         return "redirect:/admin/orders";
     }
 
-    // 📌 관리자: 주문 상태 변경
+
     @PostMapping("/{orderId}/status")
-    public String updateOrderStatus(@PathVariable Long orderId,  // ✅ Long 타입 유지
+    public String updateOrderStatus(@PathVariable Long orderId,
                                     @RequestParam OrderStatus status,
                                     RedirectAttributes redirectAttributes) {
         try {
@@ -57,6 +57,6 @@ public class AdminOrderController {
         } catch (IllegalStateException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
-        return "redirect:/admin/orders"; // 🚀 상태 업데이트 후 주문 목록으로 리디렉트
+        return "redirect:/admin/orders";
     }
 }

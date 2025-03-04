@@ -7,12 +7,12 @@
 <body>
 <h2>주문 상세 정보</h2>
 
-<!-- ✅ 주문 정보 -->
+
 <h3>주문 번호: <span th:text="${order.orderId}"></span></h3>
 <h3>주문 상태: <span th:text="${order.status}"></span></h3>
 <h3>주문 날짜: <span th:text="${#temporals.format(order.createdAt, 'yyyy-MM-dd HH:mm')}"></span></h3>
 
-<!-- ✅ 주문한 상품 목록 -->
+
 <h3>주문한 상품</h3>
 <table border="1">
     <tr>

@@ -33,7 +33,7 @@ public class Order {
     @Column(nullable = false)
     private LocalDateTime lastModifiedAt;
 
-    // ✅ 배송지 추가
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "deliveries_info_seq", nullable = false)
     private DeliveryAddressInfo deliveryAddress;

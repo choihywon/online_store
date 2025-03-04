@@ -23,13 +23,13 @@ public class AdminOrderService {
     private final AdminDeliveryService adminDeliveryService;
     private final DeliveryRepository deliveryRepository;
 
-    // 📌 모든 주문 목록 조회 (관리자용)
+
     @Transactional(readOnly = true)
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
 
-    // 📌 일반적인 주문 상태 변경 (배송 생성 X)
+
     @Transactional
     public void updateOrderStatus(Long orderId, OrderStatus status) {
         Order order = orderRepository.findById(orderId)
@@ -43,7 +43,7 @@ public class AdminOrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 주문이 존재하지 않습니다."));
 
-        System.out.println("🚀 주문 상태 변경 시도: " + orderId + " 현재 상태: " + order.getStatus());
+        System.out.println("주문 상태 변경 시도: " + orderId + " 현재 상태: " + order.getStatus());
 
         if (order.getStatus() == OrderStatus.SHIPPING || order.getStatus() == OrderStatus.DELIVERED) {
             throw new IllegalStateException("이미 배송이 진행 중이거나 완료된 주문입니다.");
@@ -52,10 +52,10 @@ public class AdminOrderService {
         order.updateStatus(OrderStatus.SHIPPING);
         orderRepository.save(order);
 
-        System.out.println("✅ 주문 상태 변경 완료: " + orderId + " → SHIPPING");
+        System.out.println("주문 상태 변경 완료: " + orderId + " → SHIPPING");
 
         Delivery delivery = Delivery.builder()
-                .id(UUID.randomUUID()) // ✅ UUID 자동 생성
+                .id(UUID.randomUUID())
                 .order(order)
                 .deliveryAddressInfo(order.getDeliveryAddress())
                 .status(DeliveryStatus.SHIPPING)
@@ -63,7 +63,7 @@ public class AdminOrderService {
                 .build();
 
         deliveryRepository.save(delivery);
-        System.out.println("✅ 배송 생성 완료: " + delivery.getId());
+        System.out.println("배송 생성 완료: " + delivery.getId());
     }
 
 

@@ -45,7 +45,7 @@ public class OrderService {
             throw new IllegalStateException("선택된 장바구니 상품이 없습니다.");
         }
 
-        // ✅ 주문 생성
+
         Order order = Order.builder()
                 .user(user)
                 .status(OrderStatus.PENDING)
@@ -54,7 +54,7 @@ public class OrderService {
                 .build();
         orderRepository.save(order);
 
-        // ✅ 주문 아이템 추가
+
         for (Cart cart : selectedCarts) {
             Inventory inventory = cart.getInventory();
             if (cart.getQuantity() > inventory.getQuantity()) {
@@ -73,7 +73,7 @@ public class OrderService {
             orderItemRepository.save(orderItem);
         }
 
-        // ✅ 주문한 상품 장바구니에서 삭제
+
         cartRepository.deleteAll(selectedCarts);
     }
 
@@ -90,12 +90,12 @@ public class OrderService {
             throw new IllegalStateException("선택된 상품이 없습니다.");
         }
 
-        // 배송지 정보 저장
+
         if (deliveryAddress.getId() == null) {
             deliveryAddress = deliveryAddressInfoRepository.save(deliveryAddress);
         }
 
-        // 주문 생성
+
         Order order = Order.builder()
                 .user(user)
                 .deliveryAddress(deliveryAddress)
@@ -105,7 +105,7 @@ public class OrderService {
                 .build();
         orderRepository.save(order);
 
-        // 장바구니 주문인 경우
+
         for (Cart cart : selectedCarts) {
             Inventory inventory = cart.getInventory();
             if (cart.getQuantity() > inventory.getQuantity()) {
@@ -126,7 +126,7 @@ public class OrderService {
             orderItemRepository.save(orderItem);
         }
 
-        // 개별 주문인 경우
+
         for (int i = 0; i < selectedInventories.size(); i++) {
             Inventory inventory = selectedInventories.get(i);
             int quantity = quantities.get(i);
@@ -149,7 +149,7 @@ public class OrderService {
             orderItemRepository.save(orderItem);
         }
 
-        // 장바구니에서 선택한 상품 삭제
+
         cartRepository.deleteAll(selectedCarts);
     }
 
@@ -201,15 +201,15 @@ public class OrderService {
             throw new IllegalStateException("배송이 시작된 주문은 취소할 수 없습니다.");
         }
 
-        // ✅ 주문 상태 변경 (취소 처리)
+
         order.updateStatus(OrderStatus.CANCELLED);
 
-        // ✅ 주문 아이템을 찾아서 재고 복구
+
         List<OrderItem> orderItems = orderItemRepository.findByOrder(order);
         for (OrderItem orderItem : orderItems) {
             Inventory inventory = orderItem.getInventory();
-            inventory.updateQuantity(inventory.getQuantity() + orderItem.getQuantity()); // ✅ 재고 복구
-            inventoryRepository.save(inventory); // ✅ 변경 사항 DB 반영
+            inventory.updateQuantity(inventory.getQuantity() + orderItem.getQuantity());
+            inventoryRepository.save(inventory);
         }
     }
 
