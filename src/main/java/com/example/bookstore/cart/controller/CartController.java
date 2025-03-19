@@ -45,7 +45,7 @@ public class CartController {
         }
 
         model.addAttribute("cartDtos", cartDtos);
-        return "cart";  // Thymeleaf에서 "cart.html"을 렌더링하도록 함
+        return "cart";
     }
 
 

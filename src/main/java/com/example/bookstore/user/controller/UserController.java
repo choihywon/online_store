@@ -29,7 +29,7 @@ public class UserController {
     @PostMapping("/join")
     public String joinUser(@ModelAttribute JoinUserDto joinUserDto) {
         userService.joinUser(joinUserDto);
-        return "redirect:/users/login"; // 회원가입 후 로그인 페이지로 이동
+        return "redirect:/users/login";
     }
 
     @GetMapping("/login")
@@ -57,7 +57,7 @@ public class UserController {
     @GetMapping("/mypage")
     public String myPage(Model model, Authentication authentication) {
         if (authentication == null || authentication.getName() == null) {
-            return "redirect:/users/login"; // 로그인 안 한 경우 로그인 페이지로 이동
+            return "redirect:/users/login";
         }
 
         String email = authentication.getName();
@@ -67,7 +67,7 @@ public class UserController {
             return "users/mypage";
         } catch (Exception e) {
             System.err.println(" 마이페이지 오류: " + e.getMessage());
-            return "redirect:/users/login"; // 예외 발생 시 로그인 페이지로 이동
+            return "redirect:/users/login";
         }
     }
 

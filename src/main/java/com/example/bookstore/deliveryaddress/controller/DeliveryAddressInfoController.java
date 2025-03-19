@@ -100,6 +100,6 @@ public class DeliveryAddressInfoController {
         if (authentication == null || authentication.getName() == null) {
             return null;
         }
-        return authentication.getName(); // 현재 로그인한 사용자의 이메일 반환
+        return authentication.getName();
     }
 }

@@ -33,15 +33,15 @@ public class CartService {
         Inventory inventory = inventoryRepository.findById(dto.getInventoryId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
 
-        // ✅ 장바구니에서 동일한 inventoryId의 책이 있는지 확인
+
         Optional<Cart> existingCart = cartRepository.findByUserAndInventory(user, inventory);
 
         if (existingCart.isPresent()) {
-            // ✅ 기존 항목이 있으면 수량 증가
+
             Cart cart = existingCart.get();
             cart.updateQuantity(cart.getQuantity() + dto.getQuantity());
         } else {
-            // ✅ 기존 항목이 없으면 새로 추가
+
             Cart newCart = Cart.builder()
                     .user(user)
                     .inventory(inventory)
@@ -106,7 +106,7 @@ public class CartService {
 
         return inventories.stream()
                 .map(inventory -> new CartDto(
-                        null, // 장바구니 ID 없음
+                        null,
                         new InventoryForUserDto(
                                 inventory.getInventoryId(),
                                 inventory.getTitle(),
@@ -132,6 +132,7 @@ public class CartService {
     
     @Transactional
     public void deleteById(Long cartId) {
+
         cartRepository.deleteById(cartId);
     }
 }
